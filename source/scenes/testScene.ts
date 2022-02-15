@@ -7,6 +7,7 @@ import {
   AmbientLight,
 } from 'three';
 import { BasicSceneProps, BasicScene } from '@/core/Scene';
+import { EaseProgress, easeOutQuint } from '@/EaseProgress';
 import slotBackground from '@/assets/slot.png';
 import numberRoll from '@/assets/number-roll.png';
 
@@ -21,6 +22,7 @@ export class TestScene extends BasicScene {
   ambientLightColor: number;
   ambientLightIntensity: number;
   rotationXShiftDegrees: number;
+  cylinderRotationProgress: EaseProgress;
 
   constructor(props: TestSceneProps) {
     super(props);
@@ -38,10 +40,18 @@ export class TestScene extends BasicScene {
       new CylinderGeometry(1, 1, 1, 32),
       new MeshLambertMaterial(),
     );
-    this.cylinder1.rotation.x = this.getCylinderRotationToNumber(7);
+    this.cylinder1.rotation.x = this.getCylinderRotationToNumber(0);
     this.cylinder1.rotation.z = Math.PI / 2;
     this.scene.add(this.cylinder1);
     this.camera.position.z = 5;
+
+    const rotationDurationSeconds = 10;
+    this.cylinderRotationProgress = new EaseProgress({
+      minValue: this.cylinder1.rotation.x,
+      maxValue: this.getCylinderRotationToNumber(7),
+      progressSpeed: 1 / rotationDurationSeconds,
+      transitionFunction: easeOutQuint,
+    });
 
     loader.load(
       numberRoll,
@@ -72,6 +82,11 @@ export class TestScene extends BasicScene {
   }
 
   update(delta: number) {
+    if (this.cylinderRotationProgress.checkIsProgressCompelete()) {
+      return;
+    }
+    this.cylinderRotationProgress.updateProgress(delta);
+    this.cylinder1.rotation.x = this.cylinderRotationProgress.getCurrentProgress();
   }
 
   toRadians(angle: number) {
