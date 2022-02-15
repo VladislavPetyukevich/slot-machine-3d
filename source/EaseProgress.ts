@@ -1,7 +1,4 @@
 export interface EaseProgressProps {
-  minValue: number;
-  maxValue: number;
-  progressSpeed: number;
   transitionFunction?: (x: number) => number;
 }
 
@@ -17,12 +14,28 @@ export class EaseProgress {
   isReversed: boolean;
 
   constructor(props: EaseProgressProps) {
-    this.minValue = props.minValue;
-    this.maxValue = props.maxValue;
+    this.transitionFunction = props.transitionFunction;
+
+    this.minValue = 0;
+    this.maxValue = 0;
+    this.isReversed = false;
+    this.userRange = 0;
+    this.minCurrentProgress = 0;
+    this.maxCurrentProgress = 0;
+    this.currentProgress = 0;
+    this.progressSpeed = 0;
+  }
+
+  start(params: {
+    minValue: number;
+    maxValue: number;
+    durationSeconds: number;
+  }) {
+    this.progressSpeed = 1 / params.durationSeconds;
+    this.minValue = params.minValue;
+    this.maxValue = params.maxValue;
     this.isReversed = this.minValue > this.maxValue;
     this.userRange = this.maxValue - this.minValue;
-    this.progressSpeed = props.progressSpeed;
-    this.transitionFunction = props.transitionFunction;
     this.minCurrentProgress = Number(this.isReversed);
     this.maxCurrentProgress = Number(!this.isReversed);
     this.currentProgress = this.minCurrentProgress;

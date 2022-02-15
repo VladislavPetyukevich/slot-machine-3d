@@ -22,11 +22,7 @@ export class CylinderSlot {
     );
     this.mesh.rotation.x = this.getCylinderRotationToNumber(0);
     this.mesh.rotation.z = Math.PI / 2;
-    const rotationDurationSeconds = 10;
     this.rotationProgress = new EaseProgress({
-      minValue: this.mesh.rotation.x,
-      maxValue: this.getCylinderRotationToNumber(7, 3),
-      progressSpeed: 1 / rotationDurationSeconds,
       transitionFunction: easeOutQuint,
     });
 
@@ -37,6 +33,21 @@ export class CylinderSlot {
         (<MeshLambertMaterial>this.mesh.material).needsUpdate = true;
       },
     );
+  }
+
+  rotateCylunderToNumber(params: {
+    number: number;
+    cycles?: number;
+    durationSeconds: number;
+  }) {
+    const rotationAngle =
+      this.getCylinderRotationToNumber(params.number, params.cycles);
+
+    this.rotationProgress.start({
+      minValue: this.mesh.rotation.x,
+      maxValue: rotationAngle,
+      durationSeconds: params.durationSeconds,
+    });
   }
 
   getCylinderRotationToNumber(number: number, cycles = 0) {
