@@ -16,9 +16,15 @@ export class CylinderSlot {
 
   constructor() {
     this.rotationXShiftDegrees = 18;
+    const mainMaterial = new MeshLambertMaterial();
+    const secondaryMaterial = new MeshLambertMaterial({ color: 0x000000 });
+    const materials: MeshLambertMaterial[] = [];
+    materials[0] = mainMaterial;
+    materials[1] = secondaryMaterial;
+    materials[2] = secondaryMaterial;
     this.mesh = new Mesh(
       new CylinderGeometry(1, 1, 1, 32),
-      new MeshLambertMaterial(),
+      materials,
     );
     this.mesh.rotation.x = this.getCylinderRotationToNumber(0);
     this.mesh.rotation.z = Math.PI / 2;
@@ -29,8 +35,8 @@ export class CylinderSlot {
     loader.load(
       numberRoll,
       (texture) => {
-        (<MeshLambertMaterial>this.mesh.material).map = texture;
-        (<MeshLambertMaterial>this.mesh.material).needsUpdate = true;
+        (<MeshLambertMaterial>mainMaterial).map = texture;
+        (<MeshLambertMaterial>mainMaterial).needsUpdate = true;
       },
     );
   }
