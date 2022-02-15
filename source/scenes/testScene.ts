@@ -48,7 +48,7 @@ export class TestScene extends BasicScene {
     const rotationDurationSeconds = 10;
     this.cylinderRotationProgress = new EaseProgress({
       minValue: this.cylinder1.rotation.x,
-      maxValue: this.getCylinderRotationToNumber(7),
+      maxValue: this.getCylinderRotationToNumber(7, 3),
       progressSpeed: 1 / rotationDurationSeconds,
       transitionFunction: easeOutQuint,
     });
@@ -73,11 +73,13 @@ export class TestScene extends BasicScene {
     );
   }
 
-  getCylinderRotationToNumber(number: number) {
+  getCylinderRotationToNumber(number: number, cycles = 0) {
     const oneNumberDegrees = 360 / 10;
+    const ratationCyclesDegrees = 360 * cycles;
     return this.toRadians(
       oneNumberDegrees * number +
-      this.rotationXShiftDegrees
+      this.rotationXShiftDegrees +
+      ratationCyclesDegrees
     );
   }
 
