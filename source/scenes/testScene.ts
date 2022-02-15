@@ -1,15 +1,13 @@
 import {
   Mesh,
-  CylinderGeometry,
   BoxGeometry,
   MeshLambertMaterial,
   TextureLoader,
   AmbientLight,
 } from 'three';
 import { BasicSceneProps, BasicScene } from '@/core/Scene';
-import { EaseProgress, easeOutQuint } from '@/EaseProgress';
+import { CylinderSlot } from '@/CylinderSlot';
 import slotBackground from '@/assets/slot.png';
-import numberRoll from '@/assets/number-roll.png';
 
 export interface TestSceneProps extends BasicSceneProps {
 }
@@ -17,17 +15,16 @@ export interface TestSceneProps extends BasicSceneProps {
 const loader = new TextureLoader();
 
 export class TestScene extends BasicScene {
-  cylinder1: Mesh;
+  cylinder1: CylinderSlot;
   ambientLight: AmbientLight;
   ambientLightColor: number;
   ambientLightIntensity: number;
-  rotationXShiftDegrees: number;
-  cylinderRotationProgress: EaseProgress;
+  // rotationXShiftDegrees: number;
+  // cylinderRotationProgress: EaseProgress;
 
   constructor(props: TestSceneProps) {
     super(props);
 
-    this.rotationXShiftDegrees = 18;
     this.ambientLightColor = 0xFFFFFF;
     this.ambientLightIntensity = 7;
     this.ambientLight = new AmbientLight(
@@ -36,30 +33,9 @@ export class TestScene extends BasicScene {
     );
     this.scene.add(this.ambientLight);
 
-    this.cylinder1 = new Mesh(
-      new CylinderGeometry(1, 1, 1, 32),
-      new MeshLambertMaterial(),
-    );
-    this.cylinder1.rotation.x = this.getCylinderRotationToNumber(0);
-    this.cylinder1.rotation.z = Math.PI / 2;
-    this.scene.add(this.cylinder1);
+    this.cylinder1 = new CylinderSlot();
+    this.scene.add(this.cylinder1.mesh);
     this.camera.position.z = 3;
-
-    const rotationDurationSeconds = 10;
-    this.cylinderRotationProgress = new EaseProgress({
-      minValue: this.cylinder1.rotation.x,
-      maxValue: this.getCylinderRotationToNumber(7, 3),
-      progressSpeed: 1 / rotationDurationSeconds,
-      transitionFunction: easeOutQuint,
-    });
-
-    loader.load(
-      numberRoll,
-      (texture) => {
-        (<MeshLambertMaterial>this.cylinder1.material).map = texture;
-        (<MeshLambertMaterial>this.cylinder1.material).needsUpdate = true;
-      },
-    );
 
     loader.load(
       slotBackground,
@@ -73,25 +49,8 @@ export class TestScene extends BasicScene {
     );
   }
 
-  getCylinderRotationToNumber(number: number, cycles = 0) {
-    const oneNumberDegrees = 360 / 10;
-    const ratationCyclesDegrees = 360 * cycles;
-    return this.toRadians(
-      oneNumberDegrees * number +
-      this.rotationXShiftDegrees +
-      ratationCyclesDegrees
-    );
-  }
 
   update(delta: number) {
-    if (this.cylinderRotationProgress.checkIsProgressCompelete()) {
-      return;
-    }
-    this.cylinderRotationProgress.updateProgress(delta);
-    this.cylinder1.rotation.x = this.cylinderRotationProgress.getCurrentProgress();
-  }
-
-  toRadians(angle: number) {
-    return angle * (Math.PI / 180);
+    this.cylinder1.update(delta);
   }
 }
