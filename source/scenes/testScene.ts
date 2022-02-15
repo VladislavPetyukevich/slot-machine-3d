@@ -43,7 +43,7 @@ export class TestScene extends BasicScene {
     this.cylinder1.rotation.x = this.getCylinderRotationToNumber(0);
     this.cylinder1.rotation.z = Math.PI / 2;
     this.scene.add(this.cylinder1);
-    this.camera.position.z = 5;
+    this.camera.position.z = 3;
 
     const rotationDurationSeconds = 10;
     this.cylinderRotationProgress = new EaseProgress({
