@@ -24,39 +24,49 @@ export class TestScene extends BasicScene {
     super(props);
 
     this.ambientLightColor = 0xFFFFFF;
-    this.ambientLightIntensity = 7;
+    this.ambientLightIntensity = 17;
     this.ambientLight = new AmbientLight(
       this.ambientLightColor,
       this.ambientLightIntensity
     );
     this.scene.add(this.ambientLight);
 
+    const cylinderScale = 1.4;
     const cylinder1 = new CylinderSlot();
-    cylinder1.mesh.position.setX(-1.5);
+    cylinder1.mesh.position.setX(-3.4);
+    cylinder1.mesh.position.setY(-1.8);
+    cylinder1.mesh.position.setZ(-0.8);
     const cylinder2 = new CylinderSlot();
     cylinder2.mesh.position.setX(0);
+    cylinder2.mesh.position.setY(-1.8);
+    cylinder2.mesh.position.setZ(-0.8);
     const cylinder3 = new CylinderSlot();
-    cylinder3.mesh.position.setX(1.5);
+    cylinder3.mesh.position.setX(3.4);
+    cylinder3.mesh.position.setY(-1.8);
+    cylinder3.mesh.position.setZ(-0.8);
     this.cylinders = [cylinder1, cylinder2, cylinder3];
-    this.cylinders.forEach(cylinder => this.scene.add(cylinder.mesh));
+    this.cylinders.forEach(cylinder => {
+      cylinder.mesh.scale.set(cylinderScale, cylinderScale, cylinderScale);
+      this.scene.add(cylinder.mesh);
+    });
 
     this.cylinders[0].rotateCylunderToNumber({
-      number: 7,
+      number: 6,
       cycles: 7,
-      durationSeconds: 5,
+      durationSeconds: 1,
     });
     this.cylinders[1].rotateCylunderToNumber({
-      number: 7,
+      number: 2,
       cycles: 7,
-      durationSeconds: 10,
+      durationSeconds: 1,
     });
     this.cylinders[2].rotateCylunderToNumber({
-      number: 7,
+      number: 1,
       cycles: 7,
-      durationSeconds: 15,
+      durationSeconds: 1,
     });
 
-    this.camera.position.z = 3;
+    this.camera.position.z = 11;
 
     loader.load(
       slotBackground,
@@ -65,7 +75,8 @@ export class TestScene extends BasicScene {
         const material = new MeshLambertMaterial({
           map: texture,
         });
-        this.scene.add(new Mesh(geometry, material));
+        const mesh = new Mesh(geometry, material);
+        this.scene.add(mesh);
       },
     );
   }
