@@ -42,6 +42,8 @@ export default class ThreeShooter {
     this.renderer.toneMappingExposure = Math.pow(0.68, 5.0);
 
     props.renderContainer.appendChild(this.renderer.domElement);
+
+    this.update();
   }
 
   update = () => {
