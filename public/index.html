@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Three Shooter</title>
+  <title>Slot3D</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
   <script src="bundle.js"></script>
@@ -14,46 +14,12 @@
   <div id="render-container" />
 
   <script type="text/javascript">
-    var blocker = document.getElementById('blocker');
-    var instructions = document.getElementById('instructions');
     var renderContainer = document.getElementById('render-container');
-    var settings = document.getElementById('settings');
-    var mouseSensitivity = document.getElementById('mouse-sensitivity');
-    var mouseSensitivityValue = document.getElementById('mouse-sensitivity-value');
-    var audioVolume = document.getElementById('audio-volume');
-    var audioVolumeValue = document.getElementById('audio-volume-value');
-    var fov = document.getElementById('fov');
-    var fovValue = document.getElementById('fov-value');
-    var pixelRatioValue = document.getElementById('pixelRatio-value');
 
-    function updateMouseSensitivityValue(value) {
-      var valueFormated = (value * 100).toFixed(3);
-      var valueNode = document.createTextNode(valueFormated);
-      mouseSensitivityValue.innerHTML = '';
-      mouseSensitivityValue.appendChild(valueNode);
-    }
-
-    function updateAudioVolumeValue(value) {
-      var valueNode = document.createTextNode(value.toFixed(1));
-      audioVolumeValue.innerHTML = '';
-      audioVolumeValue.appendChild(valueNode);
-    }
-
-    function updateFovValue(value) {
-      var valueNode = document.createTextNode(value);
-      fovValue.innerHTML = '';
-      fovValue.appendChild(valueNode);
-    }
-
-    function onLoad() {
-      console.log('game loaded');
-    }
-
-    var threeShooter = new ThreeShooter.default({
+    var threeShooter = new Slot3D.default({
       renderContainer: renderContainer,
       renderWidth: renderContainer.offsetWidth,
       renderHeight: renderContainer.offsetHeight,
-      onLoad: onLoad
     });
     threeShooter.update();
   </script>

@@ -1,8 +1,7 @@
-# Three Shooter
-Game like FPS in ThreeJS with WebGLRenderer.  
-[Live demo](https://three-shooter.herokuapp.com/)
+# Slot 3D
+3D slot-machine. Made in [three.js](https://threejs.org/)
 
 ## Installation and run
 
 Type `npm install` for install all dependencies.  
-Type `npm start` for start project.  
+Type `npm start` for start demo.

@@ -54,7 +54,7 @@ const common = {
     filename: 'bundle.js',
     library: {
       type: 'umd',
-      name: 'ThreeShooter',
+      name: 'Slot3D',
     },
   },
   resolve: {
