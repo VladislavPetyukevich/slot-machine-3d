@@ -57,6 +57,8 @@ export class CylinderSlot {
   }
 
   getCylinderRotationToNumber(number: number, cycles = 0) {
+    const currentCycles = ~~(this.mesh.rotation.x / this.toRadians(360));
+    this.mesh.rotation.x -= this.toRadians(360) * currentCycles;
     const oneNumberDegrees = 360 / 10;
     const ratationCyclesDegrees = 360 * cycles;
     return this.toRadians(

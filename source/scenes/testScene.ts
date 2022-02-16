@@ -81,8 +81,26 @@ export class TestScene extends BasicScene {
     );
   }
 
-
   update(delta: number) {
     this.cylinders.forEach(cylinder => cylinder.update(delta));
+    const isAnimationEnded = this.cylinders.every(
+      cylinder => cylinder.rotationProgress.checkIsProgressCompelete()
+    );
+    if (isAnimationEnded) {
+      this.cylinders.forEach(cylinder => {
+        const targetNumber = this.getRandomInt(0, 9);
+        console.log('targetNumber :', targetNumber );
+        const cycles = this.getRandomInt(1, 3);
+        cylinder.rotateCylunderToNumber({
+          number: targetNumber,
+          cycles,
+          durationSeconds: 2,
+        });
+      });
+    }
+  }
+
+  getRandomInt(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }
