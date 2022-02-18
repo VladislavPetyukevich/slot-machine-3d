@@ -10,6 +10,7 @@ export class TextPainter {
     if (!context) {
       throw new Error('Canvas context are not found.');
     }
+    context.textAlign = 'center';
     this.canvasContext = context;
   }
 
@@ -20,8 +21,8 @@ export class TextPainter {
       this.canvas.width,
       this.canvas.height,
     );
-    this.canvasContext.font = '48px serif';
-    this.canvasContext.fillText(text, 10, 50);
+    this.canvasContext.font = '48px Ribeye Marrow';
+    this.canvasContext.fillText(text, ~~(this.canvas.width / 2), ~~(this.canvas.height / 2));
     const dataUrl = this.canvas.toDataURL();
     onLoad(dataUrl);
   }

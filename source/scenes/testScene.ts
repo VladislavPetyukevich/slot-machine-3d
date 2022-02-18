@@ -95,7 +95,7 @@ export class TestScene extends BasicScene {
       height: 100,
     });
     this.textPainter.drawText(
-      'Hi!',
+      'ABOBA !@# 123',
       dataUrl => {
         loader.load(dataUrl, texture => {
           const geometry = new BoxGeometry(7, 1.3, 0.1)
