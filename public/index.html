@@ -37,7 +37,11 @@
         durationSeconds: [4, 5]
       },
     ]);
-    slotMachine.spin(999);
+    slotMachine.spin(getRandomInt(0, 999));
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
   </script>
 
   <script type="text/javascript">
