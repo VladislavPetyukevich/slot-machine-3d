@@ -27,6 +27,9 @@ export default class ThreeShooter {
     this.renderer = new WebGLRenderer({
       powerPreference: 'high-performance',
     });
+    if (typeof this.gameProps.backgroundHexColor === 'number') {
+      this.renderer.setClearColor(this.gameProps.backgroundHexColor);
+    }
     this.renderer.setSize(props.renderWidth, props.renderHeight);
     this.renderer.setPixelRatio(this.pixelRatio);
     // this.renderer.autoClear = false;
