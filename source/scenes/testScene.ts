@@ -7,6 +7,7 @@ import {
 } from 'three';
 import { BasicSceneProps, BasicScene } from '@/core/Scene';
 import { CylinderSlot } from '@/CylinderSlot';
+import { TextPainter } from '@/TextPainter';
 import slotBackground from '@/assets/slot.png';
 
 export type ValueRange = number | [number, number];
@@ -22,6 +23,7 @@ export interface TestSceneProps extends BasicSceneProps {
 const loader = new TextureLoader();
 
 export class TestScene extends BasicScene {
+  textPainter: TextPainter;
   cylinders: CylinderSlot[];
   spinConfig: [CylinderSpinParams, CylinderSpinParams, CylinderSpinParams];
   ambientLight: AmbientLight;
@@ -86,6 +88,26 @@ export class TestScene extends BasicScene {
         const mesh = new Mesh(geometry, material);
         this.scene.add(mesh);
       },
+    );
+
+    this.textPainter = new TextPainter({
+      width: 538,
+      height: 100,
+    });
+    this.textPainter.drawText(
+      'Hi!',
+      dataUrl => {
+        loader.load(dataUrl, texture => {
+          const geometry = new BoxGeometry(7, 1.3, 0.1)
+          const material = new MeshLambertMaterial({
+            transparent: true,
+            map: texture,
+          });
+          const mesh = new Mesh(geometry, material);
+          mesh.position.set(0, 1.3, 0.1);
+          this.scene.add(mesh);
+        });
+      }
     );
   }
 
