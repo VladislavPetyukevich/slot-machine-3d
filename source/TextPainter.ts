@@ -1,3 +1,9 @@
+export interface TextStyles {
+  size: string;
+  font: string;
+  fillStyle?: string;
+}
+
 export class TextPainter {
   canvas: HTMLCanvasElement;
   canvasContext: CanvasRenderingContext2D;
@@ -14,14 +20,21 @@ export class TextPainter {
     this.canvasContext = context;
   }
 
-  drawText(text: string, onLoad: (dataUrl: string) => void) {
+  drawText(
+    text: string,
+    styles: TextStyles,
+    onLoad: (dataUrl: string) => void
+  ) {
     this.canvasContext.clearRect(
       0,
       0,
       this.canvas.width,
       this.canvas.height,
     );
-    this.canvasContext.font = '48px Ribeye Marrow';
+    if (styles.fillStyle) {
+      this.canvasContext.fillStyle = styles.fillStyle;
+    }
+    this.canvasContext.font = `${styles.size} ${styles.font}`;
     this.canvasContext.fillText(text, ~~(this.canvas.width / 2), ~~(this.canvas.height / 2));
     const dataUrl = this.canvas.toDataURL();
     onLoad(dataUrl);

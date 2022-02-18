@@ -7,7 +7,7 @@ import {
 } from 'three';
 import { BasicSceneProps, BasicScene } from '@/core/Scene';
 import { CylinderSlot } from '@/CylinderSlot';
-import { TextPainter } from '@/TextPainter';
+import { TextPainter, TextStyles } from '@/TextPainter';
 import slotBackground from '@/assets/slot.png';
 
 export type ValueRange = number | [number, number];
@@ -18,6 +18,10 @@ export interface CylinderSpinParams {
 }
 
 export interface TestSceneProps extends BasicSceneProps {
+  caption?: string;
+  font?: string;
+  fontSize?: string;
+  fillStyle?: string;
 }
 
 const loader = new TextureLoader();
@@ -94,22 +98,18 @@ export class TestScene extends BasicScene {
       width: 538,
       height: 100,
     });
-    this.textPainter.drawText(
-      'ABOBA !@# 123',
-      dataUrl => {
-        loader.load(dataUrl, texture => {
-          const geometry = new BoxGeometry(7, 1.3, 0.1)
-          const material = new MeshLambertMaterial({
-            transparent: true,
-            map: texture,
-          });
-          const mesh = new Mesh(geometry, material);
-          mesh.position.set(0, 1.3, 0.1);
-          this.scene.add(mesh);
-        });
-      }
-    );
+    if (props.caption) {
+      this.drawCaption(
+        props.caption,
+        {
+          font: props.font,
+          size: props.fontSize,
+          fillStyle: props.fillStyle
+        }
+      );
+    }
   }
+
 
   spin(number: number) {
     if (number < 0 || number > 999) {
@@ -148,6 +148,32 @@ export class TestScene extends BasicScene {
       return this.getRandomInt(valueRange[0], valueRange[1]);
     }
     return valueRange;
+  }
+
+  drawCaption(
+    caption: string,
+    styles: Partial<TextStyles>,
+  ) {
+    this.textPainter.drawText(
+      caption,
+      {
+        size: styles.size || '48px',
+        font: styles.font || 'serif',
+        fillStyle: styles.fillStyle,
+      },
+      dataUrl => {
+        loader.load(dataUrl, texture => {
+          const geometry = new BoxGeometry(7, 1.3, 0.1)
+          const material = new MeshLambertMaterial({
+            transparent: true,
+            map: texture,
+          });
+          const mesh = new Mesh(geometry, material);
+          mesh.position.set(0, 1.3, 0.1);
+          this.scene.add(mesh);
+        });
+      }
+    );
   }
 
   update(delta: number) {
