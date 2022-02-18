@@ -79,6 +79,7 @@ export class TestScene extends BasicScene {
       (texture) => {
         const geometry = new BoxGeometry(12, 8, 0.1)
         const material = new MeshLambertMaterial({
+          transparent: true,
           map: texture,
         });
         const mesh = new Mesh(geometry, material);
