@@ -53,22 +53,23 @@ export class TestScene extends BasicScene {
     );
     this.scene.add(this.ambientLight);
 
-    const cylinderScale = 1.4;
+    const cylinderScaleX = 1.7;
+    const cylinderScaleY = 1.3;
+    const cylinderXShift = 3.4;
+    const cylindersX = [-cylinderXShift, 0, cylinderXShift];
+    const cylinderPositionY = -1.8;
+    const cylinderPositionZ = -0.8;
     const cylinder1 = new CylinderSlot();
-    cylinder1.mesh.position.setX(-3.4);
-    cylinder1.mesh.position.setY(-1.8);
-    cylinder1.mesh.position.setZ(-0.8);
     const cylinder2 = new CylinderSlot();
-    cylinder2.mesh.position.setX(0);
-    cylinder2.mesh.position.setY(-1.8);
-    cylinder2.mesh.position.setZ(-0.8);
     const cylinder3 = new CylinderSlot();
-    cylinder3.mesh.position.setX(3.4);
-    cylinder3.mesh.position.setY(-1.8);
-    cylinder3.mesh.position.setZ(-0.8);
     this.cylinders = [cylinder1, cylinder2, cylinder3];
-    this.cylinders.forEach(cylinder => {
-      cylinder.mesh.scale.set(cylinderScale, cylinderScale, cylinderScale);
+    this.cylinders.forEach((cylinder, cylinderIndex) => {
+      cylinder.mesh.position.set(
+        cylindersX[cylinderIndex],
+        cylinderPositionY,
+        cylinderPositionZ,
+      );
+      cylinder.mesh.scale.set(cylinderScaleY, cylinderScaleX, cylinderScaleY);
       this.scene.add(cylinder.mesh);
     });
 
