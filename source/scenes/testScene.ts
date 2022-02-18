@@ -72,7 +72,7 @@ export class TestScene extends BasicScene {
       this.scene.add(cylinder.mesh);
     });
 
-    this.camera.position.z = 11;
+    this.camera.position.z = 8.7;
 
     loader.load(
       slotBackground,
