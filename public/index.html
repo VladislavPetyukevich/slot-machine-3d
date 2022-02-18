@@ -21,6 +21,22 @@
       renderWidth: renderContainer.offsetWidth,
       renderHeight: renderContainer.offsetHeight,
     });
+
+    slotMachine.setSpinConfig([
+      {
+        cycles: 1,
+        durationSeconds: 3
+      },
+      {
+        cycles: [1, 2],
+        durationSeconds: [3, 4]
+      },
+      {
+        cycles: [2, 3],
+        durationSeconds: [4, 5]
+      },
+    ]);
+    slotMachine.spin(999);
   </script>
 
   <script type="text/javascript">

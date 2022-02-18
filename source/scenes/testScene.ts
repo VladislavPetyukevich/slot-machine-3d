@@ -9,6 +9,13 @@ import { BasicSceneProps, BasicScene } from '@/core/Scene';
 import { CylinderSlot } from '@/CylinderSlot';
 import slotBackground from '@/assets/slot.png';
 
+export type ValueRange = number | [number, number];
+
+export interface CylinderSpinParams {
+  cycles?: ValueRange,
+  durationSeconds: ValueRange,
+}
+
 export interface TestSceneProps extends BasicSceneProps {
 }
 
@@ -16,6 +23,7 @@ const loader = new TextureLoader();
 
 export class TestScene extends BasicScene {
   cylinders: CylinderSlot[];
+  spinConfig: [CylinderSpinParams, CylinderSpinParams, CylinderSpinParams];
   ambientLight: AmbientLight;
   ambientLightColor: number;
   ambientLightIntensity: number;
@@ -23,6 +31,20 @@ export class TestScene extends BasicScene {
   constructor(props: TestSceneProps) {
     super(props);
 
+    this.spinConfig = [
+      {
+        cycles: [2, 4],
+        durationSeconds: [7, 10]
+      },
+      {
+        cycles: [4, 6],
+        durationSeconds: [11, 14]
+      },
+      {
+        cycles: [7, 11],
+        durationSeconds: [17, 20]
+      },
+    ];
     this.ambientLightColor = 0xFFFFFF;
     this.ambientLightIntensity = 17;
     this.ambientLight = new AmbientLight(
@@ -50,22 +72,6 @@ export class TestScene extends BasicScene {
       this.scene.add(cylinder.mesh);
     });
 
-    this.cylinders[0].rotateCylunderToNumber({
-      number: 6,
-      cycles: 7,
-      durationSeconds: 1,
-    });
-    this.cylinders[1].rotateCylunderToNumber({
-      number: 2,
-      cycles: 7,
-      durationSeconds: 1,
-    });
-    this.cylinders[2].rotateCylunderToNumber({
-      number: 1,
-      cycles: 7,
-      durationSeconds: 1,
-    });
-
     this.camera.position.z = 11;
 
     loader.load(
@@ -81,23 +87,47 @@ export class TestScene extends BasicScene {
     );
   }
 
+  spin(number: number) {
+    if (number < 0 || number > 999) {
+      throw new Error(`Invalid spin number: '${number}'. Number must be in range from 0 to 999 (inclusive)`);
+    }
+    if (number % 1 !== 0) {
+      throw new Error(`Invalid spin number: '${number}'. Number must be integer.`);
+    }
+    const spinDigits = this.divideToThreeDigits(number);
+    this.spinConfig.forEach(({ cycles, durationSeconds }, index) => {
+      this.cylinders[index].rotateCylunderToNumber({
+        number: spinDigits[index],
+        cycles: cycles ? this.getValueFromRange(cycles) : 0,
+        durationSeconds: this.getValueFromRange(durationSeconds),
+      });
+    });
+  }
+
+  divideToThreeDigits(number: number) {
+    const digits = (''+number).split('').map(Number);
+    const remainingZeros = 3 - digits.length;
+    for (let i = remainingZeros; i--;) {
+      digits.unshift(0);
+    }
+    return digits;
+  }
+
+  setSpinConfig(
+    params: TestScene['spinConfig']
+  ) {
+    this.spinConfig = params;
+  }
+
+  getValueFromRange(valueRange: ValueRange) {
+    if (Array.isArray(valueRange)) {
+      return this.getRandomInt(valueRange[0], valueRange[1]);
+    }
+    return valueRange;
+  }
+
   update(delta: number) {
     this.cylinders.forEach(cylinder => cylinder.update(delta));
-    const isAnimationEnded = this.cylinders.every(
-      cylinder => cylinder.rotationProgress.checkIsProgressCompelete()
-    );
-    if (isAnimationEnded) {
-      this.cylinders.forEach(cylinder => {
-        const targetNumber = this.getRandomInt(0, 9);
-        console.log('targetNumber :', targetNumber );
-        const cycles = this.getRandomInt(1, 3);
-        cylinder.rotateCylunderToNumber({
-          number: targetNumber,
-          cycles,
-          durationSeconds: 2,
-        });
-      });
-    }
   }
 
   getRandomInt(min: number, max: number) {

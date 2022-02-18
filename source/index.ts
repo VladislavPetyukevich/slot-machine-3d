@@ -2,15 +2,12 @@ import {
   ReinhardToneMapping,
   WebGLRenderer,
   BasicShadowMap,
-  Scene,
 } from 'three';
-import { BasicScene } from '@/core/Scene';
-import { TestScene } from '@/scenes/testScene';
+import { TestScene, CylinderSpinParams } from '@/scenes/testScene';
 
 export default class ThreeShooter {
   gameProps: any;
-  currScene: BasicScene;
-  loadedScene?: BasicScene;
+  currScene: TestScene;
   // mouseSensitivity: number;
   // imageDisplayer: ImageDisplayer;
   prevTime: number;
@@ -44,6 +41,16 @@ export default class ThreeShooter {
     props.renderContainer.appendChild(this.renderer.domElement);
 
     this.update();
+  }
+
+  spin(number: number) {
+    this.currScene.spin(number);
+  }
+
+  setSpinConfig(
+    config: [CylinderSpinParams, CylinderSpinParams, CylinderSpinParams]
+  ) {
+    this.currScene.setSpinConfig(config);
   }
 
   update = () => {
