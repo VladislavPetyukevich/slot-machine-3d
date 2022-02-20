@@ -17,7 +17,7 @@ export class CylinderSlot {
   constructor() {
     this.rotationXShiftDegrees = 18;
     const mainMaterial = new MeshLambertMaterial();
-    const secondaryMaterial = new MeshLambertMaterial({ color: 0xffffff });
+    const secondaryMaterial = new MeshLambertMaterial({ color: 0x000000 });
     const materials: MeshLambertMaterial[] = [];
     materials[0] = mainMaterial;
     materials[1] = secondaryMaterial;

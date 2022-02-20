@@ -59,12 +59,12 @@ export class TestScene extends BasicScene {
     );
     this.scene.add(this.ambientLight);
 
-    const cylinderScaleX = 1.7;
-    const cylinderScaleY = 1.3;
-    const cylinderXShift = 3.4;
+    const cylinderScaleX = 1.20;
+    const cylinderScaleY = 1.11;
+    const cylinderXShift = 2.48;
     const cylindersX = [-cylinderXShift, 0, cylinderXShift];
-    const cylinderPositionY = -1.8;
-    const cylinderPositionZ = -0.8;
+    const cylinderPositionY = -2.57;
+    const cylinderPositionZ = -0.57;
     const cylinder1 = new CylinderSlot();
     const cylinder2 = new CylinderSlot();
     const cylinder3 = new CylinderSlot();
@@ -78,13 +78,16 @@ export class TestScene extends BasicScene {
       cylinder.mesh.scale.set(cylinderScaleY, cylinderScaleX, cylinderScaleY);
       this.scene.add(cylinder.mesh);
     });
-
-    this.camera.position.z = 8.7;
+    this.camera.position.y = -0.9;
+    this.camera.position.z = 10.8;
 
     loader.load(
       slotBackground,
       (texture) => {
-        const geometry = new BoxGeometry(12, 8, 0.1)
+        const aspectRatio = 1.0829875518672198;
+        const geometryHeight = 8;
+        const geometryWidth = geometryHeight * aspectRatio;
+        const geometry = new BoxGeometry(geometryWidth, geometryHeight, 0.1)
         const material = new MeshLambertMaterial({
           transparent: true,
           map: texture,
@@ -163,13 +166,13 @@ export class TestScene extends BasicScene {
       },
       dataUrl => {
         loader.load(dataUrl, texture => {
-          const geometry = new BoxGeometry(7, 1.3, 0.1)
+          const geometry = new BoxGeometry(6.4, 0.9, 0.1)
           const material = new MeshLambertMaterial({
             transparent: true,
             map: texture,
           });
           const mesh = new Mesh(geometry, material);
-          mesh.position.set(0, 1.3, 0.1);
+          mesh.position.set(0, -0.7, 0.1);
           this.scene.add(mesh);
         });
       }

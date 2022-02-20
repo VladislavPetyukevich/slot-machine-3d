@@ -18,7 +18,7 @@ export class BasicScene {
 
   constructor(props: BasicSceneProps) {
     this.scene = new Scene();
-    const fov = 55;
+    const fov = 50;
     this.camera = new PerspectiveCamera(fov, props.renderWidth / props.renderHeight, 0.1, 1000);
 
     this.audioListener = new AudioListener();
