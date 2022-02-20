@@ -17,6 +17,7 @@ export class TextPainter {
       throw new Error('Canvas context are not found.');
     }
     context.textAlign = 'center';
+    context.textBaseline = 'middle';
     this.canvasContext = context;
   }
 
