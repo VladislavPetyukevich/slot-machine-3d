@@ -17,6 +17,10 @@
   <script type="text/javascript">
     var renderContainer = document.getElementById('render-container');
 
+    function onSpinStart() {
+      console.log('onSpinStart');
+    }
+
     var slotMachine = new Slot3D.default({
       renderContainer: renderContainer,
       renderWidth: renderContainer.offsetWidth,
@@ -26,6 +30,7 @@
       font: 'Angles Octagon',
       fontSize: '70px',
       fillStyle: '#020000',
+      onSpinStart: onSpinStart,
     });
 
     slotMachine.setSpinConfig([

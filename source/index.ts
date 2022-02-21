@@ -48,6 +48,9 @@ export default class ThreeShooter {
 
   spin(number: number) {
     this.currScene.spin(number);
+    if (this.gameProps.onSpinStart) {
+      this.gameProps.onSpinStart();
+    }
   }
 
   setSpinConfig(
