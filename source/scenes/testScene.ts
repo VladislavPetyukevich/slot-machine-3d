@@ -161,6 +161,10 @@ export class TestScene extends BasicScene {
     this.spinConfig = params;
   }
 
+  checkIsSpinning() {
+    return this.spinState === SpinState.spinning;
+  }
+
   getValueFromRange(valueRange: ValueRange) {
     if (Array.isArray(valueRange)) {
       return this.getRandomInt(valueRange[0], valueRange[1]);
@@ -209,10 +213,10 @@ export class TestScene extends BasicScene {
     if (!isAllFinished) {
       return;
     }
+    this.spinState = SpinState.spinningFinished;
     if (this.onSpinFinish) {
       this.onSpinFinish(this.currentSpinNumber);
     }
-    this.spinState = SpinState.spinningFinished;
   }
 
   getRandomInt(min: number, max: number) {

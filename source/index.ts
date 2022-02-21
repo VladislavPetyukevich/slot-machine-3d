@@ -7,6 +7,7 @@ import { TestScene, CylinderSpinParams } from '@/scenes/testScene';
 
 export default class ThreeShooter {
   gameProps: any;
+  spinQueue: number[];
   currScene: TestScene;
   // mouseSensitivity: number;
   // imageDisplayer: ImageDisplayer;
@@ -20,7 +21,11 @@ export default class ThreeShooter {
 
   constructor(props: any) {
     this.gameProps = props;
-    this.currScene = new TestScene(props);
+    this.spinQueue = [];
+    this.currScene = new TestScene({
+      ...props,
+      onSpinFinish: this.onSpinFinish,
+    });
     this.pixelRatio = 1;
     this.enabled = true;
     this.prevTime = performance.now();
@@ -47,6 +52,10 @@ export default class ThreeShooter {
   }
 
   spin(number: number) {
+    if (this.currScene.checkIsSpinning()) {
+      this.spinQueue.push(number);
+      return;
+    }
     this.currScene.spin(number);
     if (this.gameProps.onSpinStart) {
       this.gameProps.onSpinStart();
@@ -57,6 +66,22 @@ export default class ThreeShooter {
     config: [CylinderSpinParams, CylinderSpinParams, CylinderSpinParams]
   ) {
     this.currScene.setSpinConfig(config);
+  }
+
+  onSpinFinish = (spinNumber: number) => {
+    if (this.gameProps.onSpinFinish) {
+      this.gameProps.onSpinFinish(spinNumber);
+    }
+    if (this.spinQueue.length !== 0) {
+      this.spinFromQueue();
+    }
+  };
+
+  spinFromQueue() {
+    const queueFirstItem = this.spinQueue.shift();
+    if (typeof queueFirstItem === 'number') {
+      this.spin(queueFirstItem);
+    }
   }
 
   update = () => {
