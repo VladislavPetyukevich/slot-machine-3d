@@ -68,6 +68,22 @@ export default class ThreeShooter {
     this.currScene.setSpinConfig(config);
   }
 
+  enableGlitchSpinSlot() {
+    this.currScene.setGlitchSpinSlot(true);
+  }
+
+  disableGlitchSpinSlot() {
+    this.currScene.setGlitchSpinSlot(false);
+  }
+
+  enableGlitchSpinCaption() {
+    this.currScene.setGlitchSpinCaption(true);
+  }
+
+  disableGlitchSpinCaption() {
+    this.currScene.setGlitchSpinCaption(false);
+  }
+
   onSpinFinish = (spinNumber: number) => {
     if (this.gameProps.onSpinFinish) {
       this.gameProps.onSpinFinish(spinNumber);

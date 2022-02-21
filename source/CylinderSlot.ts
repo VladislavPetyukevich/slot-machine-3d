@@ -11,11 +11,11 @@ const loader = new TextureLoader();
 
 export class CylinderSlot {
   mesh: Mesh;
-  rotationXShiftDegrees: number;
+  rotationXShiftRadians: number;
   rotationProgress: EaseProgress;
 
   constructor() {
-    this.rotationXShiftDegrees = 18;
+    this.rotationXShiftRadians = this.toRadians(18);
     const mainMaterial = new MeshLambertMaterial();
     const secondaryMaterial = new MeshLambertMaterial({ color: 0x000000 });
     const materials: MeshLambertMaterial[] = [];
@@ -63,9 +63,8 @@ export class CylinderSlot {
     const ratationCyclesDegrees = 360 * cycles;
     return this.toRadians(
       oneNumberDegrees * number +
-      this.rotationXShiftDegrees +
       ratationCyclesDegrees
-    );
+    ) + this.rotationXShiftRadians;
   }
 
   update(delta: number) {

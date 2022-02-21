@@ -43,6 +43,10 @@ export class TestScene extends BasicScene {
   ambientLight: AmbientLight;
   ambientLightColor: number;
   ambientLightIntensity: number;
+  slotMesh: Mesh;
+  captionMesh?: Mesh;
+  isGlitchSpinSlot: boolean;
+  isGlitchSpinCaption: boolean;
 
   constructor(props: TestSceneProps) {
     super(props);
@@ -63,6 +67,8 @@ export class TestScene extends BasicScene {
     ];
     this.currentSpinNumber = 0;
     this.spinState = SpinState.idle;
+    this.isGlitchSpinSlot = false;
+    this.isGlitchSpinCaption = false;
     this.onSpinFinish = props.onSpinFinish;
     this.ambientLightColor = 0xFFFFFF;
     this.ambientLightIntensity = 17;
@@ -94,19 +100,21 @@ export class TestScene extends BasicScene {
     this.camera.position.y = -0.9;
     this.camera.position.z = 10.8;
 
+    const aspectRatio = 1.0829875518672198;
+    const geometryHeight = 8;
+    const geometryWidth = geometryHeight * aspectRatio;
+    const slotGeometry = new BoxGeometry(geometryWidth, geometryHeight, 0.1)
+    const slotMaterial = new MeshLambertMaterial({ });
+    this.slotMesh = new Mesh(slotGeometry, slotMaterial);
+    this.scene.add(this.slotMesh);
     loader.load(
       slotBackground,
       (texture) => {
-        const aspectRatio = 1.0829875518672198;
-        const geometryHeight = 8;
-        const geometryWidth = geometryHeight * aspectRatio;
-        const geometry = new BoxGeometry(geometryWidth, geometryHeight, 0.1)
         const material = new MeshLambertMaterial({
           transparent: true,
           map: texture,
         });
-        const mesh = new Mesh(geometry, material);
-        this.scene.add(mesh);
+        this.slotMesh.material = material;
       },
     );
 
@@ -115,6 +123,12 @@ export class TestScene extends BasicScene {
       height: 100,
     });
     if (props.caption) {
+      const captionGeometry = new BoxGeometry(6.4, 0.9, 0.1)
+      const captionMaterial = new MeshLambertMaterial({
+        transparent: true,
+      });
+      this.captionMesh = new Mesh(captionGeometry, captionMaterial);
+      this.scene.add(this.captionMesh);
       this.drawCaption(
         props.caption,
         {
@@ -124,6 +138,8 @@ export class TestScene extends BasicScene {
         }
       );
     }
+    this.resetPositions();
+    this.resetRotations();
   }
 
 
@@ -165,6 +181,19 @@ export class TestScene extends BasicScene {
     return this.spinState === SpinState.spinning;
   }
 
+  resetPositions() {
+    if (this.captionMesh) {
+      this.captionMesh.position.set(0, -0.7, 0.1);
+    }
+  }
+
+  resetRotations() {
+    this.slotMesh.rotation.set(0, 0, 0);
+    if (this.captionMesh) {
+      this.captionMesh.rotation.set(0, 0, 0);
+    }
+  }
+
   getValueFromRange(valueRange: ValueRange) {
     if (Array.isArray(valueRange)) {
       return this.getRandomInt(valueRange[0], valueRange[1]);
@@ -185,21 +214,42 @@ export class TestScene extends BasicScene {
       },
       dataUrl => {
         loader.load(dataUrl, texture => {
-          const geometry = new BoxGeometry(6.4, 0.9, 0.1)
           const material = new MeshLambertMaterial({
             transparent: true,
             map: texture,
           });
-          const mesh = new Mesh(geometry, material);
-          mesh.position.set(0, -0.7, 0.1);
-          this.scene.add(mesh);
+          if (this.captionMesh) {
+            this.captionMesh.material = material;
+          }
         });
       }
     );
   }
 
+  setGlitchSpinSlot(isEnabled: boolean) {
+    this.isGlitchSpinSlot = isEnabled;
+    if (!isEnabled) {
+      this.resetRotations();
+      this.resetPositions();
+    }
+  }
+
+  setGlitchSpinCaption(isEnabled: boolean) {
+    this.isGlitchSpinCaption = isEnabled;
+    if (!isEnabled) {
+      this.resetRotations();
+      this.resetPositions();
+    }
+  }
+
   update(delta: number) {
     this.cylinders.forEach(cylinder => cylinder.update(delta));
+    if (this.isGlitchSpinSlot) {
+      this.updateGlitchSpinSlot();
+    }
+    if (this.isGlitchSpinCaption) {
+      this.updateGlitchSpinCaption();
+    }
     this.updateOnFinish();
   }
 
@@ -217,6 +267,25 @@ export class TestScene extends BasicScene {
     if (this.onSpinFinish) {
       this.onSpinFinish(this.currentSpinNumber);
     }
+  }
+
+  updateGlitchSpinSlot() {
+    const cylinder = this.cylinders[1];
+    const cylinderRotationX =
+      cylinder.mesh.rotation.x - cylinder.rotationXShiftRadians;
+    this.slotMesh.rotation.y = cylinderRotationX;
+  }
+
+  updateGlitchSpinCaption() {
+    if (!this.captionMesh) {
+      return;
+    }
+    const cylinder = this.cylinders[1];
+    const cylinderRotationX =
+      cylinder.mesh.rotation.x - cylinder.rotationXShiftRadians;
+    this.captionMesh.rotation.z = cylinderRotationX;
+    this.captionMesh.rotation.y = cylinderRotationX;
+    this.captionMesh.position.z = cylinderRotationX / 2;
   }
 
   getRandomInt(min: number, max: number) {

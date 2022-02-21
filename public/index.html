@@ -38,6 +38,13 @@
       onSpinFinish: onSpinFinish,
     });
 
+    // Glitches
+    // slotMachine.enableGlitchSpinSlot();
+    // slotMachine.disableGlitchSpinSlot();
+
+    // slotMachine.enableGlitchSpinCaption();
+    // slotMachine.disableGlitchSpinCaption();
+
     slotMachine.setSpinConfig([
       {
         cycles: 1,
@@ -52,7 +59,8 @@
         durationSeconds: [4, 5]
       },
     ]);
-    for (let i = 5; i--;) {
+
+    for (let i = 666; i--;) {
       slotMachine.spin(getRandomInt(0, 999));
     }
 
