@@ -58,7 +58,7 @@ export default class ThreeShooter {
     }
     this.currScene.spin(number);
     if (this.gameProps.onSpinStart) {
-      this.gameProps.onSpinStart();
+      this.gameProps.onSpinStart(number);
     }
   }
 
