@@ -21,6 +21,10 @@
       console.log('onSpinStart');
     }
 
+    function onSpinFinish(spinNumber) {
+      console.log('onSpinFinish:', spinNumber);
+    }
+
     var slotMachine = new Slot3D.default({
       renderContainer: renderContainer,
       renderWidth: renderContainer.offsetWidth,
@@ -31,6 +35,7 @@
       fontSize: '70px',
       fillStyle: '#020000',
       onSpinStart: onSpinStart,
+      onSpinFinish: onSpinFinish,
     });
 
     slotMachine.setSpinConfig([

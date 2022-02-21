@@ -17,11 +17,18 @@ export interface CylinderSpinParams {
   durationSeconds: ValueRange,
 }
 
+const enum SpinState {
+  idle,
+  spinning,
+  spinningFinished,
+}
+
 export interface TestSceneProps extends BasicSceneProps {
   caption?: string;
   font?: string;
   fontSize?: string;
   fillStyle?: string;
+  onSpinFinish?: (spinNumber: number) => void;
 }
 
 const loader = new TextureLoader();
@@ -30,6 +37,9 @@ export class TestScene extends BasicScene {
   textPainter: TextPainter;
   cylinders: CylinderSlot[];
   spinConfig: [CylinderSpinParams, CylinderSpinParams, CylinderSpinParams];
+  spinState: SpinState;
+  currentSpinNumber: number;
+  onSpinFinish?: TestSceneProps['onSpinFinish'];
   ambientLight: AmbientLight;
   ambientLightColor: number;
   ambientLightIntensity: number;
@@ -51,6 +61,9 @@ export class TestScene extends BasicScene {
         durationSeconds: [17, 20]
       },
     ];
+    this.currentSpinNumber = 0;
+    this.spinState = SpinState.idle;
+    this.onSpinFinish = props.onSpinFinish;
     this.ambientLightColor = 0xFFFFFF;
     this.ambientLightIntensity = 17;
     this.ambientLight = new AmbientLight(
@@ -121,6 +134,8 @@ export class TestScene extends BasicScene {
     if (number % 1 !== 0) {
       throw new Error(`Invalid spin number: '${number}'. Number must be integer.`);
     }
+    this.currentSpinNumber = number;
+    this.spinState = SpinState.spinning;
     const spinDigits = this.divideToThreeDigits(number);
     this.spinConfig.forEach(({ cycles, durationSeconds }, index) => {
       this.cylinders[index].rotateCylunderToNumber({
@@ -181,6 +196,23 @@ export class TestScene extends BasicScene {
 
   update(delta: number) {
     this.cylinders.forEach(cylinder => cylinder.update(delta));
+    this.updateOnFinish();
+  }
+
+  updateOnFinish() {
+    if (this.spinState !== SpinState.spinning) {
+      return;
+    }
+    const isAllFinished = this.cylinders.every(
+      cylinder => cylinder.rotationProgress.checkIsProgressCompelete()
+    );
+    if (!isAllFinished) {
+      return;
+    }
+    if (this.onSpinFinish) {
+      this.onSpinFinish(this.currentSpinNumber);
+    }
+    this.spinState = SpinState.spinningFinished;
   }
 
   getRandomInt(min: number, max: number) {
