@@ -84,6 +84,22 @@ export default class ThreeShooter {
     this.currScene.setGlitchSpinCaption(false);
   }
 
+  enableCameraShake() {
+    this.currScene.setCameraShake(true);
+  }
+
+  disableCameraShake() {
+    this.currScene.setCameraShake(false);
+  }
+
+  setCameraShakeAmplitude(amplitude: number) {
+    this.currScene.cameraShake.amplitude = amplitude;
+  }
+
+  setCameraShakesPerSecond(shakesPerSecond: number) {
+    this.currScene.cameraShake.updateShakesPerSecond(shakesPerSecond);
+  }
+
   onSpinFinish = (spinNumber: number) => {
     if (this.gameProps.onSpinFinish) {
       this.gameProps.onSpinFinish(spinNumber);

@@ -7,6 +7,7 @@ import {
 } from 'three';
 import { BasicSceneProps, BasicScene } from '@/core/Scene';
 import { CylinderSlot } from '@/CylinderSlot';
+import { CoordinatesShake } from '@/CoordinatesShake';
 import { TextPainter, TextStyles } from '@/TextPainter';
 import slotBackground from '@/assets/slot.png';
 
@@ -47,6 +48,8 @@ export class TestScene extends BasicScene {
   captionMesh?: Mesh;
   isGlitchSpinSlot: boolean;
   isGlitchSpinCaption: boolean;
+  isCameraShake: boolean;
+  cameraShake: CoordinatesShake;
 
   constructor(props: TestSceneProps) {
     super(props);
@@ -69,6 +72,7 @@ export class TestScene extends BasicScene {
     this.spinState = SpinState.idle;
     this.isGlitchSpinSlot = false;
     this.isGlitchSpinCaption = false;
+    this.isCameraShake = false;
     this.onSpinFinish = props.onSpinFinish;
     this.ambientLightColor = 0xFFFFFF;
     this.ambientLightIntensity = 17;
@@ -97,8 +101,6 @@ export class TestScene extends BasicScene {
       cylinder.mesh.scale.set(cylinderScaleY, cylinderScaleX, cylinderScaleY);
       this.scene.add(cylinder.mesh);
     });
-    this.camera.position.y = -0.9;
-    this.camera.position.z = 10.8;
 
     const aspectRatio = 1.0829875518672198;
     const geometryHeight = 8;
@@ -140,6 +142,11 @@ export class TestScene extends BasicScene {
     }
     this.resetPositions();
     this.resetRotations();
+    this.cameraShake = new CoordinatesShake({
+      startCoordinates: this.camera.position,
+      shakesPerSecond: 35,
+      amplitude: 0.7,
+    });
   }
 
 
@@ -182,6 +189,8 @@ export class TestScene extends BasicScene {
   }
 
   resetPositions() {
+    this.camera.position.y = -0.9;
+    this.camera.position.z = 10.8;
     if (this.captionMesh) {
       this.captionMesh.position.set(0, -0.7, 0.1);
     }
@@ -242,6 +251,13 @@ export class TestScene extends BasicScene {
     }
   }
 
+  setCameraShake(isEnabled: boolean) {
+    this.isCameraShake = isEnabled;
+    if (!isEnabled) {
+      this.resetPositions();
+    }
+  }
+
   update(delta: number) {
     this.cylinders.forEach(cylinder => cylinder.update(delta));
     if (this.isGlitchSpinSlot) {
@@ -249,6 +265,9 @@ export class TestScene extends BasicScene {
     }
     if (this.isGlitchSpinCaption) {
       this.updateGlitchSpinCaption();
+    }
+    if (this.isCameraShake) {
+      this.updateCameraShake(delta);
     }
     this.updateOnFinish();
   }
@@ -267,6 +286,11 @@ export class TestScene extends BasicScene {
     if (this.onSpinFinish) {
       this.onSpinFinish(this.currentSpinNumber);
     }
+  }
+
+  updateCameraShake(delta: number) {
+    this.cameraShake.update(delta);
+    this.camera.position.copy(this.cameraShake.getCurrentCoordinates());
   }
 
   updateGlitchSpinSlot() {
