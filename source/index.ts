@@ -48,6 +48,12 @@ export default class ThreeShooter {
 
     props.renderContainer.appendChild(this.renderer.domElement);
 
+    window.addEventListener('resize', () => {
+      this.currScene.camera.aspect = window.innerWidth / window.innerHeight;
+      this.currScene.camera.updateProjectionMatrix();
+      this.renderer.setSize(props.renderContainer.offsetWidth, props.renderContainer.offsetHeight);
+    });
+
     this.update();
   }
 
