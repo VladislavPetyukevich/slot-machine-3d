@@ -100,6 +100,10 @@ export default class ThreeShooter {
     this.currScene.cameraShake.updateShakesPerSecond(shakesPerSecond);
   }
 
+  setCaption(caption: string) {
+    this.currScene.setCaption(caption);
+  }
+
   onSpinFinish = (spinNumber: number) => {
     if (this.gameProps.onSpinFinish) {
       this.gameProps.onSpinFinish(spinNumber);

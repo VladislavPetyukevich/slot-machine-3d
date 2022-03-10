@@ -1,4 +1,6 @@
-export interface TextStyles {
+export interface TextPainterProps {
+  width: number;
+  height: number;
   size: string;
   font: string;
   fillStyle?: string;
@@ -7,11 +9,17 @@ export interface TextStyles {
 export class TextPainter {
   canvas: HTMLCanvasElement;
   canvasContext: CanvasRenderingContext2D;
+  size: string;
+  font: string;
+  fillStyle?: string;
 
-  constructor(props: { width: number, height: number }) {
+  constructor(props: TextPainterProps) {
     this.canvas = document.createElement('canvas');
     this.canvas.width = props.width;
     this.canvas.height = props.height;
+    this.size = props.size;
+    this.font = props.font;
+    this.fillStyle = props.fillStyle;
     const context = this.canvas.getContext('2d');
     if (!context) {
       throw new Error('Canvas context are not found.');
@@ -23,7 +31,6 @@ export class TextPainter {
 
   drawText(
     text: string,
-    styles: TextStyles,
     onLoad: (dataUrl: string) => void
   ) {
     this.canvasContext.clearRect(
@@ -32,10 +39,10 @@ export class TextPainter {
       this.canvas.width,
       this.canvas.height,
     );
-    if (styles.fillStyle) {
-      this.canvasContext.fillStyle = styles.fillStyle;
+    if (this.fillStyle) {
+      this.canvasContext.fillStyle = this.fillStyle;
     }
-    this.canvasContext.font = `${styles.size} ${styles.font}`;
+    this.canvasContext.font = `${this.size} ${this.font}`;
     this.canvasContext.fillText(text, ~~(this.canvas.width / 2), ~~(this.canvas.height / 2));
     const dataUrl = this.canvas.toDataURL();
     onLoad(dataUrl);

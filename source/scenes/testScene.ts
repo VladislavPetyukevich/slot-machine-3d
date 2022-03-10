@@ -8,7 +8,7 @@ import {
 import { BasicSceneProps, BasicScene } from '@/core/Scene';
 import { CylinderSlot } from '@/CylinderSlot';
 import { CoordinatesShake } from '@/CoordinatesShake';
-import { TextPainter, TextStyles } from '@/TextPainter';
+import { TextPainter } from '@/TextPainter';
 import slotBackground from '@/assets/slot.png';
 
 export type ValueRange = number | [number, number];
@@ -26,8 +26,8 @@ const enum SpinState {
 
 export interface TestSceneProps extends BasicSceneProps {
   caption?: string;
-  font?: string;
-  fontSize?: string;
+  font: string;
+  fontSize: string;
   fillStyle?: string;
   onSpinFinish?: (spinNumber: number) => void;
 }
@@ -123,22 +123,18 @@ export class TestScene extends BasicScene {
     this.textPainter = new TextPainter({
       width: 538,
       height: 100,
+      font: props.font,
+      size: props.fontSize,
+      fillStyle: props.fillStyle,
     });
+    const captionGeometry = new BoxGeometry(6.4, 0.9, 0.1);
+    const captionMaterial = new MeshLambertMaterial({
+      transparent: true,
+    });
+    this.captionMesh = new Mesh(captionGeometry, captionMaterial);
+    this.scene.add(this.captionMesh);
     if (props.caption) {
-      const captionGeometry = new BoxGeometry(6.4, 0.9, 0.1)
-      const captionMaterial = new MeshLambertMaterial({
-        transparent: true,
-      });
-      this.captionMesh = new Mesh(captionGeometry, captionMaterial);
-      this.scene.add(this.captionMesh);
-      this.drawCaption(
-        props.caption,
-        {
-          font: props.font,
-          size: props.fontSize,
-          fillStyle: props.fillStyle
-        }
-      );
+      this.setCaption(props.caption);
     }
     this.resetPositions();
     this.resetRotations();
@@ -188,6 +184,12 @@ export class TestScene extends BasicScene {
     return this.spinState === SpinState.spinning;
   }
 
+  setCaption(caption: string) {
+    this.drawCaption(caption);
+    this.resetPositions();
+    this.resetRotations();
+  }
+
   resetPositions() {
     this.camera.position.y = -0.9;
     this.camera.position.z = 10.8;
@@ -210,17 +212,9 @@ export class TestScene extends BasicScene {
     return valueRange;
   }
 
-  drawCaption(
-    caption: string,
-    styles: Partial<TextStyles>,
-  ) {
+  drawCaption(caption: string) {
     this.textPainter.drawText(
       caption,
-      {
-        size: styles.size || '48px',
-        font: styles.font || 'serif',
-        fillStyle: styles.fillStyle,
-      },
       dataUrl => {
         loader.load(dataUrl, texture => {
           const material = new MeshLambertMaterial({
