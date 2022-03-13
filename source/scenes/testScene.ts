@@ -116,8 +116,7 @@ export class TestScene extends BasicScene {
     const geometryHeight = 8;
     const geometryWidth = geometryHeight * aspectRatio;
     const slotGeometry = new BoxGeometry(geometryWidth, geometryHeight, 0.1)
-    const slotMaterial = new MeshLambertMaterial({ });
-    this.slotMesh = new Mesh(slotGeometry, slotMaterial);
+    this.slotMesh = new Mesh(slotGeometry, []);
     this.slotMesh.receiveShadow = true;
     this.scene.add(this.slotMesh);
     loader.load(
@@ -127,7 +126,10 @@ export class TestScene extends BasicScene {
           transparent: true,
           map: texture,
         });
-        this.slotMesh.material = material;
+        const slotMaterials: MeshLambertMaterial[] = [];
+        slotMaterials[4] = material;
+        slotMaterials[5] = material;
+        this.slotMesh.material = slotMaterials;
       },
     );
 
@@ -139,10 +141,7 @@ export class TestScene extends BasicScene {
       fillStyle: props.fillStyle,
     });
     const captionGeometry = new BoxGeometry(6.4, 0.9, 0.1);
-    const captionMaterial = new MeshLambertMaterial({
-      transparent: true,
-    });
-    this.captionMesh = new Mesh(captionGeometry, captionMaterial);
+    this.captionMesh = new Mesh(captionGeometry, []);
     this.scene.add(this.captionMesh);
     if (props.caption) {
       this.setCaption(props.caption);
@@ -238,8 +237,11 @@ export class TestScene extends BasicScene {
             transparent: true,
             map: texture,
           });
+          const captionMaterials: MeshLambertMaterial[] = [];
+          captionMaterials[4] = material;
+          captionMaterials[5] = material;
           if (this.captionMesh) {
-            this.captionMesh.material = material;
+            this.captionMesh.material = captionMaterials;
           }
         });
       }
