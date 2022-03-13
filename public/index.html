@@ -13,6 +13,7 @@
 
 <body>
   <button onclick="onPopupOpen()">Popup!</button>
+  <button onclick="onStart()">Click to run</button>
   <div id="render-container" />
 
   <script type="text/javascript">
@@ -24,59 +25,99 @@
     }
 
     var renderContainer = document.getElementById('render-container');
+    var audio = new Audio('/spin-start.mp3');
+    var audioHard = new Audio('/spin-start-hard.mp3');
+    var spinAudio = {
+      666: audioHard,
+    };
+    var caption = 'RABOTAEM';
+    var spinCaptions = {
+      0: 'NULL',
+      666: 'WTF',
+    };
 
-    function onSpinStart(spinNumber) {
-      console.log('onSpinStart', spinNumber);
-    }
+    function onStart() {
+      function onSpinStart(spinNumber) {
+        var audioPlayer = spinAudio[spinNumber] || audio;
+        slotMachine.setCaption(spinCaptions[spinNumber] || caption);
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0;
+        audioPlayer.play();
+        if (spinNumber === 666) {
+          slotMachine.enableCameraShake();
+        } else {
+          slotMachine.disableCameraShake();
+        }
+        if (spinNumber === 000) {
+          slotMachine.enableGlitchSpinSlot();
+          slotMachine.enableGlitchSpinCaption();
+        } else {
+          slotMachine.disableGlitchSpinSlot();
+          slotMachine.disableGlitchSpinCaption();
+        }
+        console.log('onSpinStart', spinNumber);
+      }
 
-    function onSpinFinish(spinNumber) {
-      console.log('onSpinFinish:', spinNumber);
-    }
+      function onSpinFinish(spinNumber) {
+        console.log('onSpinFinish:', spinNumber);
+      }
 
-    var slotMachine = new Slot3D.default({
-      renderContainer: renderContainer,
-      renderWidth: renderContainer.offsetWidth,
-      renderHeight: renderContainer.offsetHeight,
-      numbersRollTextureURL: '/number-roll.png',
-      slotTextureURL: '/slot.png',
-      backgroundHexColor: 0x00FF00,
-      caption: 'RABOTAEM',
-      font: 'Angles Octagon',
-      fontSize: '40px',
-      fillStyle: '#020000',
-      onSpinStart: onSpinStart,
-      onSpinFinish: onSpinFinish,
-    });
+      var slotMachine = new Slot3D.default({
+        renderContainer: renderContainer,
+        renderWidth: renderContainer.offsetWidth,
+        renderHeight: renderContainer.offsetHeight,
+        numbersRollTextureURL: '/number-roll.png',
+        slotTextureURL: '/slot.png',
+        backgroundHexColor: 0x00FF00,
+        caption: caption,
+        font: 'Angles Octagon',
+        fontSize: '40px',
+        fillStyle: '#020000',
+        onSpinStart: onSpinStart,
+        onSpinFinish: onSpinFinish,
+      });
 
-    // Glitches
-    // slotMachine.enableGlitchSpinSlot();
-    // slotMachine.enableGlitchSpinCaption();
+      // Glitches
+      // slotMachine.enableGlitchSpinSlot();
+      // slotMachine.enableGlitchSpinCaption();
 
-    // slotMachine.disableGlitchSpinSlot();
-    // slotMachine.disableGlitchSpinCaption();
+      // slotMachine.disableGlitchSpinSlot();
+      // slotMachine.disableGlitchSpinCaption();
 
-    // slotMachine.setCameraShakeAmplitude(0.15);
-    // slotMachine.setCameraShakesPerSecond(15);
-    // slotMachine.enableCameraShake();
-    // slotMachine.disableCameraShake();
+      // slotMachine.setCameraShakeAmplitude(0.15);
+      // slotMachine.setCameraShakesPerSecond(15);
+      // slotMachine.enableCameraShake();
+      // slotMachine.disableCameraShake();
 
-    slotMachine.setSpinConfig([
-      {
-        cycles: 1,
-        durationSeconds: 3
-      },
-      {
-        cycles: [1, 2],
-        durationSeconds: [3, 4]
-      },
-      {
-        cycles: [2, 3],
-        durationSeconds: [4, 5]
-      },
-    ]);
+      slotMachine.setCameraShakeAmplitude(0.15);
+      slotMachine.setCameraShakesPerSecond(15);
 
-    for (let i = 666; i--;) {
-      slotMachine.spin(getRandomInt(0, 999));
+      slotMachine.setSpinConfig([
+        {
+          cycles: 1,
+          durationSeconds: 3
+        },
+        {
+          cycles: [1, 2],
+          durationSeconds: [3, 4]
+        },
+        {
+          cycles: [2, 3],
+          durationSeconds: [4, 5]
+        },
+      ]);
+
+      for (let i = 666; i--;) {
+        if (Math.random() < 0.15) {
+          slotMachine.spin(666);
+          continue;
+        }
+        if (Math.random() < 0.15) {
+          slotMachine.spin(000);
+          continue;
+        }
+        slotMachine.spin(getRandomInt(0, 999));
+      }
     }
 
     function getRandomInt(min, max) {
