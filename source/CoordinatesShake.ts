@@ -1,4 +1,5 @@
 import { Vector3 } from 'three';
+import { randomNumbers } from '@/RandomNumbers';
 
 export interface CoordinatesShakeProps {
   startCoordinates: Vector3;
@@ -38,9 +39,9 @@ export class CoordinatesShake {
     if (this.currentShakeDelay >= this.maxShakeDelay) {
       this.currentShakeDelay = 0;
       this.currentCoordinates.set(
-        -Math.random() * this.amplitude + this.startCoordinates.x,
-        -Math.random() * this.amplitude + this.startCoordinates.y,
-        -Math.random() * this.amplitude + this.startCoordinates.z,
+        -randomNumbers.getRandom() * this.amplitude + this.startCoordinates.x,
+        -randomNumbers.getRandom() * this.amplitude + this.startCoordinates.y,
+        -randomNumbers.getRandom() * this.amplitude + this.startCoordinates.z,
       );
     }
   }
