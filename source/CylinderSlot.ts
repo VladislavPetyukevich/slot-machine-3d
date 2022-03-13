@@ -31,6 +31,7 @@ export class CylinderSlot {
     this.rotationProgress = new EaseProgress({
       transitionFunction: easeOutQuint,
     });
+    this.mesh.castShadow = true;
 
     loader.load(
       props.texture || numberRoll,

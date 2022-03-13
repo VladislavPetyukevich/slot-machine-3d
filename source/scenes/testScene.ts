@@ -4,6 +4,7 @@ import {
   MeshLambertMaterial,
   TextureLoader,
   AmbientLight,
+  SpotLight,
 } from 'three';
 import { BasicSceneProps, BasicScene } from '@/core/Scene';
 import { CylinderSlot } from '@/CylinderSlot';
@@ -84,6 +85,13 @@ export class TestScene extends BasicScene {
     );
     this.scene.add(this.ambientLight);
 
+    const spotlight = new SpotLight(0xFFFFFF, 100, 30, 0.4);
+    spotlight.position.x = 9;
+    spotlight.position.z = 18;
+    spotlight.position.y = 0;
+    spotlight.castShadow = true;
+    this.scene.add(spotlight);
+
     const cylinderScaleX = 1.20;
     const cylinderScaleY = 1.11;
     const cylinderXShift = 2.48;
@@ -110,6 +118,7 @@ export class TestScene extends BasicScene {
     const slotGeometry = new BoxGeometry(geometryWidth, geometryHeight, 0.1)
     const slotMaterial = new MeshLambertMaterial({ });
     this.slotMesh = new Mesh(slotGeometry, slotMaterial);
+    this.slotMesh.receiveShadow = true;
     this.scene.add(this.slotMesh);
     loader.load(
       props.slotTextureURL || slotBackground,
