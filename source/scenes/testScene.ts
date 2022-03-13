@@ -25,6 +25,8 @@ const enum SpinState {
 }
 
 export interface TestSceneProps extends BasicSceneProps {
+  slotTextureURL?: string;
+  numbersRollTextureURL?: string;
   caption?: string;
   font: string;
   fontSize: string;
@@ -88,9 +90,9 @@ export class TestScene extends BasicScene {
     const cylindersX = [-cylinderXShift, 0, cylinderXShift];
     const cylinderPositionY = -2.57;
     const cylinderPositionZ = -0.57;
-    const cylinder1 = new CylinderSlot();
-    const cylinder2 = new CylinderSlot();
-    const cylinder3 = new CylinderSlot();
+    const cylinder1 = this.createCylinder(props.numbersRollTextureURL);
+    const cylinder2 = this.createCylinder(props.numbersRollTextureURL);
+    const cylinder3 = this.createCylinder(props.numbersRollTextureURL);
     this.cylinders = [cylinder1, cylinder2, cylinder3];
     this.cylinders.forEach((cylinder, cylinderIndex) => {
       cylinder.mesh.position.set(
@@ -110,7 +112,7 @@ export class TestScene extends BasicScene {
     this.slotMesh = new Mesh(slotGeometry, slotMaterial);
     this.scene.add(this.slotMesh);
     loader.load(
-      slotBackground,
+      props.slotTextureURL || slotBackground,
       (texture) => {
         const material = new MeshLambertMaterial({
           transparent: true,
@@ -182,6 +184,12 @@ export class TestScene extends BasicScene {
 
   checkIsSpinning() {
     return this.spinState === SpinState.spinning;
+  }
+
+  createCylinder(texureUrl?: string) {
+    return new CylinderSlot({
+      texture: texureUrl,
+    });
   }
 
   setCaption(caption: string) {

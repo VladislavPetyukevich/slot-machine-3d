@@ -14,7 +14,7 @@ export class CylinderSlot {
   rotationXShiftRadians: number;
   rotationProgress: EaseProgress;
 
-  constructor() {
+  constructor(props: { texture?: string }) {
     this.rotationXShiftRadians = this.toRadians(18);
     const mainMaterial = new MeshLambertMaterial();
     const secondaryMaterial = new MeshLambertMaterial({ color: 0x000000 });
@@ -33,7 +33,7 @@ export class CylinderSlot {
     });
 
     loader.load(
-      numberRoll,
+      props.texture || numberRoll,
       (texture) => {
         (<MeshLambertMaterial>mainMaterial).map = texture;
         (<MeshLambertMaterial>mainMaterial).needsUpdate = true;
