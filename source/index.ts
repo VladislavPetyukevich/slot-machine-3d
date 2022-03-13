@@ -13,11 +13,8 @@ export default class ThreeShooter {
   gameProps: any;
   spinQueue: number[];
   currScene: TestScene;
-  // mouseSensitivity: number;
-  // imageDisplayer: ImageDisplayer;
   prevTime: number;
   enabled: boolean;
-  // loaded: boolean;
   pixelRatio: number;
   renderer: WebGLRenderer;
   composer: EffectComposer;
@@ -41,7 +38,6 @@ export default class ThreeShooter {
     }
     this.renderer.setSize(props.renderWidth, props.renderHeight);
     this.renderer.setPixelRatio(this.pixelRatio);
-    // this.renderer.autoClear = false;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = BasicShadowMap;
     this.renderer.physicallyCorrectLights = true;
@@ -137,19 +133,11 @@ export default class ThreeShooter {
   }
 
   update = () => {
-    // if (this.enabled) {
     const time = performance.now();
     const delta = (time - this.prevTime) / 1000;
-    // this.renderer.clear();
     this.currScene.update(delta);
     this.composer.render(delta);
-    // this.renderer.clearDepth();
-    // this.renderer.render(this.currScene.scene, this.currScene.camera);
-    // this.renderer.render(this.imageDisplayer.scene, this.imageDisplayer.camera);
-    // this.renderer.render(hud.scene, hud.camera);
-    // hud.update(delta);
     this.prevTime = time;
-    // }
     requestAnimationFrame(this.update);
   }
 }
