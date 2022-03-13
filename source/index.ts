@@ -3,6 +3,10 @@ import {
   WebGLRenderer,
   BasicShadowMap,
 } from 'three';
+import { ShaderPass } from './Postprocessing/ShaderPass';
+import { RenderPass } from './Postprocessing/RenderPass';
+import { EffectComposer } from './Postprocessing/EffectComposer';
+import { ColorCorrectionShader } from './Postprocessing/Shaders/ColorCorrectionShader';
 import { TestScene, CylinderSpinParams } from '@/scenes/testScene';
 
 export default class ThreeShooter {
@@ -16,8 +20,8 @@ export default class ThreeShooter {
   // loaded: boolean;
   pixelRatio: number;
   renderer: WebGLRenderer;
-  // composer: EffectComposer;
-  // effectColorCorrection?: ShaderPass;
+  composer: EffectComposer;
+  effectColorCorrection?: ShaderPass;
 
   constructor(props: any) {
     this.gameProps = props;
@@ -46,12 +50,18 @@ export default class ThreeShooter {
     this.renderer.toneMapping = ReinhardToneMapping;
     this.renderer.toneMappingExposure = Math.pow(0.68, 5.0);
 
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.addPass(new RenderPass(this.currScene.scene, this.currScene.camera));
+    this.effectColorCorrection = new ShaderPass(ColorCorrectionShader);
+    this.composer.addPass(this.effectColorCorrection);
+
     props.renderContainer.appendChild(this.renderer.domElement);
 
     window.addEventListener('resize', () => {
       this.currScene.camera.aspect = window.innerWidth / window.innerHeight;
       this.currScene.camera.updateProjectionMatrix();
       this.renderer.setSize(props.renderContainer.offsetWidth, props.renderContainer.offsetHeight);
+      this.composer.setSize(props.renderContainer.offsetWidth, props.renderContainer.offsetHeight);
     });
 
     this.update();
@@ -132,9 +142,9 @@ export default class ThreeShooter {
     const delta = (time - this.prevTime) / 1000;
     // this.renderer.clear();
     this.currScene.update(delta);
-    // this.composer.render(delta);
+    this.composer.render(delta);
     // this.renderer.clearDepth();
-    this.renderer.render(this.currScene.scene, this.currScene.camera);
+    // this.renderer.render(this.currScene.scene, this.currScene.camera);
     // this.renderer.render(this.imageDisplayer.scene, this.imageDisplayer.camera);
     // this.renderer.render(hud.scene, hud.camera);
     // hud.update(delta);
