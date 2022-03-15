@@ -9,17 +9,23 @@ import { EffectComposer } from './Postprocessing/EffectComposer';
 import { ColorCorrectionShader } from './Postprocessing/Shaders/ColorCorrectionShader';
 import { TestScene, CylinderSpinParams } from './scenes/testScene';
 
+const defaultProps = {
+  font: 'serif',
+  fontSize: '40px',
+  fillStyle: '#020000',
+};
+
 export interface SlotMachine3DProps {
   renderContainer: HTMLElement,
   numbersRollTextureURL: string,
   slotTextureURL: string,
-  backgroundHexColor: number,
-  caption: string,
-  font: string,
-  fontSize: string,
-  fillStyle: string,
-  onSpinStart: (spinNumber: number) => void,
-  onSpinFinish: (spinNumber: number) => void,
+  backgroundHexColor?: number,
+  caption?: string,
+  font?: string,
+  fontSize?: string,
+  fillStyle?: string,
+  onSpinStart?: (spinNumber: number) => void,
+  onSpinFinish?: (spinNumber: number) => void,
 }
 
 export default class SlotMachine3D {
@@ -38,6 +44,9 @@ export default class SlotMachine3D {
     this.spinQueue = [];
     this.currScene = new TestScene({
       ...props,
+      font: props.font || defaultProps.font,
+      fontSize: props.fontSize || defaultProps.fontSize,
+      fillStyle: props.fillStyle || defaultProps.fillStyle,
       renderWidth: this.props.renderContainer.offsetWidth,
       renderHeight: this.props.renderContainer.offsetHeight,
       onSpinFinish: this.onSpinFinish,
