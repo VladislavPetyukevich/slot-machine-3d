@@ -9,8 +9,23 @@ import { EffectComposer } from './Postprocessing/EffectComposer';
 import { ColorCorrectionShader } from './Postprocessing/Shaders/ColorCorrectionShader';
 import { TestScene, CylinderSpinParams } from './scenes/testScene';
 
+export interface SlotMachine3DProps {
+  renderContainer: HTMLElement,
+  renderWidth: number,
+  renderHeight: number,
+  numbersRollTextureURL: string,
+  slotTextureURL: string,
+  backgroundHexColor: number,
+  caption: string,
+  font: string,
+  fontSize: string,
+  fillStyle: string,
+  onSpinStart: (spinNumber: number) => void,
+  onSpinFinish: (spinNumber: number) => void,
+}
+
 export default class SlotMachine3D {
-  gameProps: any;
+  props: SlotMachine3DProps;
   spinQueue: number[];
   currScene: TestScene;
   prevTime: number;
@@ -20,8 +35,8 @@ export default class SlotMachine3D {
   composer: EffectComposer;
   effectColorCorrection?: ShaderPass;
 
-  constructor(props: any) {
-    this.gameProps = props;
+  constructor(props: SlotMachine3D['props']) {
+    this.props = props;
     this.spinQueue = [];
     this.currScene = new TestScene({
       ...props,
@@ -33,8 +48,8 @@ export default class SlotMachine3D {
     this.renderer = new WebGLRenderer({
       powerPreference: 'high-performance',
     });
-    if (typeof this.gameProps.backgroundHexColor === 'number') {
-      this.renderer.setClearColor(this.gameProps.backgroundHexColor);
+    if (typeof this.props.backgroundHexColor === 'number') {
+      this.renderer.setClearColor(this.props.backgroundHexColor);
     }
     this.renderer.setSize(props.renderWidth, props.renderHeight);
     this.renderer.setPixelRatio(this.pixelRatio);
@@ -69,8 +84,8 @@ export default class SlotMachine3D {
       return;
     }
     this.currScene.spin(number);
-    if (this.gameProps.onSpinStart) {
-      this.gameProps.onSpinStart(number);
+    if (this.props.onSpinStart) {
+      this.props.onSpinStart(number);
     }
   }
 
@@ -117,8 +132,8 @@ export default class SlotMachine3D {
   }
 
   onSpinFinish = (spinNumber: number) => {
-    if (this.gameProps.onSpinFinish) {
-      this.gameProps.onSpinFinish(spinNumber);
+    if (this.props.onSpinFinish) {
+      this.props.onSpinFinish(spinNumber);
     }
     if (this.spinQueue.length !== 0) {
       this.spinFromQueue();
@@ -141,3 +156,5 @@ export default class SlotMachine3D {
     requestAnimationFrame(this.update);
   }
 }
+
+export { SlotMachine3D };
