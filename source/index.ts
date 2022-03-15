@@ -11,8 +11,6 @@ import { TestScene, CylinderSpinParams } from './scenes/testScene';
 
 export interface SlotMachine3DProps {
   renderContainer: HTMLElement,
-  renderWidth: number,
-  renderHeight: number,
   numbersRollTextureURL: string,
   slotTextureURL: string,
   backgroundHexColor: number,
@@ -40,6 +38,8 @@ export default class SlotMachine3D {
     this.spinQueue = [];
     this.currScene = new TestScene({
       ...props,
+      renderWidth: this.props.renderContainer.offsetWidth,
+      renderHeight: this.props.renderContainer.offsetHeight,
       onSpinFinish: this.onSpinFinish,
     });
     this.pixelRatio = 1;
@@ -51,7 +51,6 @@ export default class SlotMachine3D {
     if (typeof this.props.backgroundHexColor === 'number') {
       this.renderer.setClearColor(this.props.backgroundHexColor);
     }
-    this.renderer.setSize(props.renderWidth, props.renderHeight);
     this.renderer.setPixelRatio(this.pixelRatio);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = BasicShadowMap;
@@ -68,11 +67,9 @@ export default class SlotMachine3D {
 
     props.renderContainer.appendChild(this.renderer.domElement);
 
+    this.updateRenderSize();
     window.addEventListener('resize', () => {
-      this.currScene.camera.aspect = window.innerWidth / window.innerHeight;
-      this.currScene.camera.updateProjectionMatrix();
-      this.renderer.setSize(props.renderContainer.offsetWidth, props.renderContainer.offsetHeight);
-      this.composer.setSize(props.renderContainer.offsetWidth, props.renderContainer.offsetHeight);
+      this.updateRenderSize();
     });
 
     this.update();
@@ -145,6 +142,19 @@ export default class SlotMachine3D {
     if (typeof queueFirstItem === 'number') {
       this.spin(queueFirstItem);
     }
+  }
+
+  updateRenderSize() {
+    this.currScene.camera.aspect = window.innerWidth / window.innerHeight;
+    this.currScene.camera.updateProjectionMatrix();
+    this.renderer.setSize(
+      this.props.renderContainer.offsetWidth,
+      this.props.renderContainer.offsetHeight
+    );
+    this.composer.setSize(
+      this.props.renderContainer.offsetWidth,
+      this.props.renderContainer.offsetHeight
+    );
   }
 
   update = () => {
