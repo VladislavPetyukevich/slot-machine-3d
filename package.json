@@ -13,7 +13,6 @@
     "demo": "webpack-dev-server --env development",
     "prebuild": "rimraf build",
     "build": "tsc -m CommonJS",
-    "heroku-postbuild": "webpack --env production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -36,7 +35,6 @@
   "dependencies": {
     "@types/offscreencanvas": "^2019.6.4",
     "@types/webvr-api": "^0.0.36",
-    "express": "^4.16.2",
     "three": "0.110.0"
   }
 }
