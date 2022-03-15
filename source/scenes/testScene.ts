@@ -6,10 +6,10 @@ import {
   AmbientLight,
   SpotLight,
 } from 'three';
-import { BasicSceneProps, BasicScene } from '@/core/Scene';
-import { CylinderSlot } from '@/CylinderSlot';
-import { CoordinatesShake } from '@/CoordinatesShake';
-import { TextPainter } from '@/TextPainter';
+import { BasicSceneProps, BasicScene } from '../core/Scene';
+import { CylinderSlot } from '../CylinderSlot';
+import { CoordinatesShake } from '../CoordinatesShake';
+import { TextPainter } from '../TextPainter';
 
 export type ValueRange = number | [number, number];
 

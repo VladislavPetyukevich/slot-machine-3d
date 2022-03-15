@@ -5,6 +5,9 @@
 
 import { Pass } from "./Pass";
 
+/**
+ * @type Class
+ */
 var MaskPass = function ( scene, camera ) {
 
 	Pass.call( this );
@@ -84,6 +87,9 @@ MaskPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 } );
 
 
+/**
+ * @type Class
+ */
 var ClearMaskPass = function () {
 
 	Pass.call( this );

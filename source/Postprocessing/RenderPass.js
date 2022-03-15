@@ -5,6 +5,9 @@
 
 import { Pass } from "./Pass";
 
+/**
+ * @type Class
+ */
 var RenderPass = function ( scene, camera, overrideMaterial, clearColor, clearAlpha ) {
 
 	Pass.call( this );

@@ -4,6 +4,9 @@ import {
 	Mesh
 } from "three";
 
+/**
+ * @type Class
+ */
 function Pass() {
 
 	// if set to true, the pass is processed by the composer
@@ -39,6 +42,9 @@ Pass.FullScreenQuad = ( function () {
 	var camera = new OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
 	var geometry = new PlaneBufferGeometry( 2, 2 );
 
+  /**
+   * @type Class
+   */
 	var FullScreenQuad = function ( material ) {
 
 		this._mesh = new Mesh( geometry, material );

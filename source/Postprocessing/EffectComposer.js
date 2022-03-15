@@ -16,6 +16,9 @@ import { CopyShader } from "./Shaders/CopyShader";
 import { ShaderPass } from "./ShaderPass";
 import { MaskPass, ClearMaskPass } from "./MaskPass";
 
+/**
+ * @type Class
+ */
 var EffectComposer = function ( renderer, renderTarget ) {
 
 	this.renderer = renderer;
@@ -234,6 +237,9 @@ Object.assign( EffectComposer.prototype, {
 } );
 
 
+/**
+ * @type Class
+ */
 var Pass = function () {
 
 	// if set to true, the pass is processed by the composer

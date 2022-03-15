@@ -1,5 +1,5 @@
 import { Vector3 } from 'three';
-import { randomNumbers } from '@/RandomNumbers';
+import { randomNumbers } from './RandomNumbers';
 
 export interface CoordinatesShakeProps {
   startCoordinates: Vector3;

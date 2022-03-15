@@ -4,7 +4,7 @@ import {
   MeshLambertMaterial,
   TextureLoader,
 } from 'three';
-import { EaseProgress, easeOutQuint } from '@/EaseProgress';
+import { EaseProgress, easeOutQuint } from './EaseProgress';
 
 const loader = new TextureLoader();
 

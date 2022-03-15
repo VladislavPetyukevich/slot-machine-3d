@@ -8,6 +8,9 @@ import {
 } from "three";
 import { Pass } from "./Pass";
 
+/**
+ * @type Class
+ */
 var ShaderPass = function ( shader, textureID ) {
 
 	Pass.call( this );
