@@ -5,7 +5,6 @@ import {
   TextureLoader,
 } from 'three';
 import { EaseProgress, easeOutQuint } from '@/EaseProgress';
-import numberRoll from '@/assets/number-roll.png';
 
 const loader = new TextureLoader();
 
@@ -14,7 +13,7 @@ export class CylinderSlot {
   rotationXShiftRadians: number;
   rotationProgress: EaseProgress;
 
-  constructor(props: { texture?: string }) {
+  constructor(props: { texture: string }) {
     this.rotationXShiftRadians = this.toRadians(18);
     const mainMaterial = new MeshLambertMaterial();
     const secondaryMaterial = new MeshLambertMaterial({ color: 0x000000 });
@@ -34,7 +33,7 @@ export class CylinderSlot {
     this.mesh.castShadow = true;
 
     loader.load(
-      props.texture || numberRoll,
+      props.texture,
       (texture) => {
         (<MeshLambertMaterial>mainMaterial).map = texture;
         (<MeshLambertMaterial>mainMaterial).needsUpdate = true;

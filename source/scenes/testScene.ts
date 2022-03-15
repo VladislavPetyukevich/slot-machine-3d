@@ -10,7 +10,6 @@ import { BasicSceneProps, BasicScene } from '@/core/Scene';
 import { CylinderSlot } from '@/CylinderSlot';
 import { CoordinatesShake } from '@/CoordinatesShake';
 import { TextPainter } from '@/TextPainter';
-import slotBackground from '@/assets/slot.png';
 
 export type ValueRange = number | [number, number];
 
@@ -26,8 +25,8 @@ const enum SpinState {
 }
 
 export interface TestSceneProps extends BasicSceneProps {
-  slotTextureURL?: string;
-  numbersRollTextureURL?: string;
+  slotTextureURL: string;
+  numbersRollTextureURL: string;
   caption?: string;
   font: string;
   fontSize: string;
@@ -120,7 +119,7 @@ export class TestScene extends BasicScene {
     this.slotMesh.receiveShadow = true;
     this.scene.add(this.slotMesh);
     loader.load(
-      props.slotTextureURL || slotBackground,
+      props.slotTextureURL,
       (texture) => {
         const material = new MeshLambertMaterial({
           transparent: true,
@@ -194,7 +193,7 @@ export class TestScene extends BasicScene {
     return this.spinState === SpinState.spinning;
   }
 
-  createCylinder(texureUrl?: string) {
+  createCylinder(texureUrl: string) {
     return new CylinderSlot({
       texture: texureUrl,
     });
