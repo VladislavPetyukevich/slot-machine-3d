@@ -9,7 +9,7 @@
     "source/"
   ],
   "scripts": {
-    "start": "webpack-dev-server --env development",
+    "demo": "webpack-dev-server --env development",
     "build": "tsc -m CommonJS",
     "heroku-postbuild": "webpack --env production",
     "test": "echo \"Error: no test specified\" && exit 1"

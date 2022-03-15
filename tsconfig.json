@@ -60,7 +60,7 @@
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
   },
   "exclude": [
-    "public",
+    "demo",
     "server.js",
     "webpack.config.js"
   ]
