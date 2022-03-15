@@ -9,7 +9,7 @@ import { EffectComposer } from './Postprocessing/EffectComposer';
 import { ColorCorrectionShader } from './Postprocessing/Shaders/ColorCorrectionShader';
 import { TestScene, CylinderSpinParams } from '@/scenes/testScene';
 
-export default class ThreeShooter {
+export default class SlotMachine3D {
   gameProps: any;
   spinQueue: number[];
   currScene: TestScene;
