@@ -157,15 +157,17 @@ export default class SlotMachine3D {
   }
 
   updateRenderSize() {
-    this.currScene.camera.aspect = window.innerWidth / window.innerHeight;
+    const {
+      width,
+      height
+    } = this.props.renderContainer.getBoundingClientRect();
+    this.currScene.camera.aspect = width / height;
     this.currScene.camera.updateProjectionMatrix();
     this.renderer.setSize(
-      this.props.renderContainer.offsetWidth,
-      this.props.renderContainer.offsetHeight
+      width, height
     );
     this.composer.setSize(
-      this.props.renderContainer.offsetWidth,
-      this.props.renderContainer.offsetHeight
+      width, height
     );
   }
 
