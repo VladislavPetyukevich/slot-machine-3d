@@ -18,6 +18,15 @@
     "postversion": "git push && git push --tags",
     "prepublishOnly": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VladislavPetyukevich/slot-machine-3d"
+  },
+  "homepage": "https://github.com/VladislavPetyukevich/slot-machine-3d#readme",
+  "keywords": [
+    "slot",
+    "machine"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
