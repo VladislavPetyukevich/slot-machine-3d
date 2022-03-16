@@ -13,7 +13,10 @@
     "demo": "webpack-dev-server --env development",
     "prebuild": "rimraf build",
     "build": "tsc -m CommonJS",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "version": "npm run build && git add .",
+    "postversion": "git push && git push --tags",
+    "prepublishOnly": "npm run build"
   },
   "author": "",
   "license": "ISC",
