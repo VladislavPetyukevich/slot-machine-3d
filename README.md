@@ -1,9 +1,9 @@
 # SlotMachine3D
 3D slot-machine. Made in [three.js](https://threejs.org/)
 
-## Demo
-
 ![preview of demo](preview.png)
+
+## Demo
 
 Run `npm ci && npm run demo` to see the demo in action.  
 All this demo code is located in [demo](demo) directory.  
