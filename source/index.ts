@@ -54,8 +54,11 @@ export default class SlotMachine3D {
     this.pixelRatio = 1;
     this.enabled = true;
     this.prevTime = performance.now();
+    const customCanvas = document.createElement('canvas');
+    customCanvas.style.display = 'block';
     this.renderer = new WebGLRenderer({
       powerPreference: 'high-performance',
+      canvas: customCanvas,
     });
     if (typeof this.props.backgroundHexColor === 'number') {
       this.renderer.setClearColor(this.props.backgroundHexColor);
