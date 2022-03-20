@@ -3,34 +3,35 @@
  */
 
 
+import { Camera, Color, Material, Scene, WebGLRenderer } from "three";
 import { Pass } from "./Pass";
 
-/**
- * @type Class
- */
-var RenderPass = function ( scene, camera, overrideMaterial, clearColor, clearAlpha ) {
 
-	Pass.call( this );
+export class RenderPass extends Pass {
+  scene: Scene;
+  camera: Camera;
+  overrideMaterial: Material | null;
+  clearColor: Color | null;
+  clearAlpha: number;
+  clearDepth: boolean;
 
-	this.scene = scene;
-	this.camera = camera;
+	constructor(scene: Scene, camera: Camera, overrideMaterial?: Material, clearColor?: Color, clearAlpha?: number) {
+		super();
 
-	this.overrideMaterial = overrideMaterial;
+		this.scene = scene;
+		this.camera = camera;
+	
+		this.overrideMaterial = overrideMaterial || null;
+	
+		this.clearColor = clearColor || null;
+		this.clearAlpha = ( clearAlpha !== undefined ) ? clearAlpha : 0;
+	
+		this.clear = true;
+		this.clearDepth = false;
+		this.needsSwap = false;
+	}
 
-	this.clearColor = clearColor;
-	this.clearAlpha = ( clearAlpha !== undefined ) ? clearAlpha : 0;
-
-	this.clear = true;
-	this.clearDepth = false;
-	this.needsSwap = false;
-
-};
-
-RenderPass.prototype = Object.assign( Object.create( Pass.prototype ), {
-
-	constructor: RenderPass,
-
-	render: function ( renderer, writeBuffer, readBuffer /*, deltaTime, maskActive */ ) {
+	render( renderer: WebGLRenderer, writeBuffer: any, readBuffer: any /*, deltaTime, maskActive */ ) {
 
 		var oldAutoClear = renderer.autoClear;
 		renderer.autoClear = false;
@@ -62,7 +63,7 @@ RenderPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 
 		if ( this.clearColor ) {
 
-			renderer.setClearColor( oldClearColor, oldClearAlpha );
+			renderer.setClearColor( oldClearColor as any, oldClearAlpha );
 
 		}
 
@@ -70,7 +71,4 @@ RenderPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 		renderer.autoClear = oldAutoClear;
 
 	}
-
-} );
-
-export { RenderPass };
+}

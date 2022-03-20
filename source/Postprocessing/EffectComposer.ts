@@ -10,16 +10,29 @@ import {
 	PlaneBufferGeometry,
 	RGBAFormat,
 	Vector2,
-	WebGLRenderTarget
+  WebGLRenderer,
+	WebGLRenderTarget,
 } from "three";
 import { CopyShader } from "./Shaders/CopyShader";
 import { ShaderPass } from "./ShaderPass";
 import { MaskPass, ClearMaskPass } from "./MaskPass";
+import { Pass } from "./Pass";
 
-/**
- * @type Class
- */
-var EffectComposer = function ( renderer, renderTarget ) {
+export class EffectComposer {
+  renderer: WebGLRenderer;
+  renderTarget1: WebGLRenderTarget;
+  renderTarget2: WebGLRenderTarget;
+  writeBuffer: WebGLRenderTarget;
+  readBuffer: WebGLRenderTarget;
+  passes: Pass[];
+  copyPass: ShaderPass;
+  clock: Clock;
+  renderToScreen: boolean;
+  _pixelRatio: number;
+  _width: number;
+  _height: number;
+
+  constructor(renderer: WebGLRenderer, renderTarget?: WebGLRenderTarget) {
 
 	this.renderer = renderer;
 
@@ -76,35 +89,32 @@ var EffectComposer = function ( renderer, renderTarget ) {
 	this.copyPass = new ShaderPass( CopyShader );
 
 	this.clock = new Clock();
+  }
 
-};
-
-Object.assign( EffectComposer.prototype, {
-
-	swapBuffers: function () {
+	swapBuffers() {
 
 		var tmp = this.readBuffer;
 		this.readBuffer = this.writeBuffer;
 		this.writeBuffer = tmp;
 
-	},
+	}
 
-	addPass: function ( pass ) {
+	addPass( pass: Pass ) {
 
 		this.passes.push( pass );
 
 		var size = this.renderer.getDrawingBufferSize( new Vector2() );
 		pass.setSize( size.width, size.height );
 
-	},
+	}
 
-	insertPass: function ( pass, index ) {
+	insertPass( pass: Pass, index: number ) {
 
 		this.passes.splice( index, 0, pass );
 
-	},
+	}
 
-	isLastEnabledPass: function ( passIndex ) {
+	isLastEnabledPass( passIndex: number ) {
 
 		for ( var i = passIndex + 1; i < this.passes.length; i ++ ) {
 
@@ -118,9 +128,9 @@ Object.assign( EffectComposer.prototype, {
 
 		return true;
 
-	},
+	}
 
-	render: function ( deltaTime ) {
+	render( deltaTime?: number ) {
 
 		// deltaTime value is in seconds
 
@@ -153,7 +163,7 @@ Object.assign( EffectComposer.prototype, {
 
 					context.stencilFunc( context.NOTEQUAL, 1, 0xffffffff ); // avoid direct gl calls
 
-					this.copyPass.render( this.renderer, this.writeBuffer, this.readBuffer, deltaTime );
+					this.copyPass.render( this.renderer, this.writeBuffer, this.readBuffer, /* deltaTime */ );
 
 					context.stencilFunc( context.EQUAL, 1, 0xffffffff ); // avoid direct gl calls
 
@@ -181,9 +191,9 @@ Object.assign( EffectComposer.prototype, {
 
 		this.renderer.setRenderTarget( currentRenderTarget );
 
-	},
+	}
 
-	reset: function ( renderTarget ) {
+	reset( renderTarget?: WebGLRenderTarget ) {
 
 		if ( renderTarget === undefined ) {
 
@@ -205,9 +215,9 @@ Object.assign( EffectComposer.prototype, {
 		this.writeBuffer = this.renderTarget1;
 		this.readBuffer = this.renderTarget2;
 
-	},
+	}
 
-	setSize: function ( width, height ) {
+	setSize( width: number, height: number ) {
 
 		this._width = width;
 		this._height = height;
@@ -224,9 +234,9 @@ Object.assign( EffectComposer.prototype, {
 
 		}
 
-	},
+	}
 
-	setPixelRatio: function ( pixelRatio ) {
+	setPixelRatio( pixelRatio: number ) {
 
 		this._pixelRatio = pixelRatio;
 
@@ -234,80 +244,4 @@ Object.assign( EffectComposer.prototype, {
 
 	}
 
-} );
-
-
-/**
- * @type Class
- */
-var Pass = function () {
-
-	// if set to true, the pass is processed by the composer
-	this.enabled = true;
-
-	// if set to true, the pass indicates to swap read and write buffer after rendering
-	this.needsSwap = true;
-
-	// if set to true, the pass clears its buffer before rendering
-	this.clear = false;
-
-	// if set to true, the result of the pass is rendered to screen. This is set automatically by EffectComposer.
-	this.renderToScreen = false;
-
 };
-
-Object.assign( Pass.prototype, {
-
-	setSize: function ( /* width, height */ ) {},
-
-	render: function ( /* renderer, writeBuffer, readBuffer, deltaTime, maskActive */ ) {
-
-		console.error( 'THREE.Pass: .render() must be implemented in derived pass.' );
-
-	}
-
-} );
-
-// Helper for passes that need to fill the viewport with a single quad.
-Pass.FullScreenQuad = ( function () {
-
-	var camera = new OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
-	var geometry = new PlaneBufferGeometry( 2, 2 );
-
-	var FullScreenQuad = function ( material ) {
-
-		this._mesh = new Mesh( geometry, material );
-
-	};
-
-	Object.defineProperty( FullScreenQuad.prototype, 'material', {
-
-		get: function () {
-
-			return this._mesh.material;
-
-		},
-
-		set: function ( value ) {
-
-			this._mesh.material = value;
-
-		}
-
-	} );
-
-	Object.assign( FullScreenQuad.prototype, {
-
-		render: function ( renderer ) {
-
-			renderer.render( this._mesh, camera );
-
-		}
-
-	} );
-
-	return FullScreenQuad;
-
-} )();
-
-export { EffectComposer, Pass };
