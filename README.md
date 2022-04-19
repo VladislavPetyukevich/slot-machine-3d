@@ -23,6 +23,37 @@ var slotMachine = new SlotMachine3D({
   fillStyle: '#020000', // Optional. Default value: '#020000'
   onSpinStart: onSpinStart, // Optional
   onSpinFinish: onSpinFinish, // Optional
+  // Optional
+  // sceneTemplate: {
+  //   slot: {
+  //     position: { x: 0, y: 0, z: 0 },
+  //     scale: { x: 8.663900414937759, y: 8, z: 1 },
+  //   },
+  //   caption: {
+  //     position: { x: 0, y: -0.7, z: 0.1 },
+  //     scale: { x: 6.4, y: 0.9, z: 0.1 },
+  //   },
+  //   camera: {
+  //     position: { x: 0, y: -0.9, z: 10.8 },
+  //   },
+  //   spotlight: {
+  //     position: { x: 9, y: 0, z: 18 },
+  //   },
+  //   cylinders: [
+  //     {
+  //       position: { x: -2.48, y: -2.57, z: -0.57 },
+  //       scale: { x: 1.11, y: 1.2, z: 1.11 },
+  //     },
+  //     {
+  //       position: { x: 0, y: -2.57, z: -0.57 },
+  //       scale: { x: 1.11, y: 1.2, z: 1.11 },
+  //     },
+  //     {
+  //       position: { x: 2.48, y: -2.57, z: -0.57 },
+  //       scale: { x: 1.11, y: 1.2, z: 1.11 },
+  //     },
+  //   ],
+  // },
 });
 
 slotMachine.spin(123);

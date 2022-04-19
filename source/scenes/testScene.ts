@@ -11,6 +11,34 @@ import { CylinderSlot } from '../CylinderSlot';
 import { CoordinatesShake } from '../CoordinatesShake';
 import { TextPainter } from '../TextPainter';
 
+export interface TemplateValue {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface TemplatePosition {
+  position: TemplateValue;
+}
+
+export interface TemplateScale {
+  scale: TemplateValue;
+}
+
+export type TemplateCylinder = [
+  TemplatePosition & TemplateScale,
+  TemplatePosition & TemplateScale,
+  TemplatePosition & TemplateScale,
+];
+
+export interface SceneTemplate {
+  slot: TemplatePosition & TemplateScale;
+  caption: TemplatePosition & TemplateScale;
+  camera: TemplatePosition;
+  spotlight: TemplatePosition;
+  cylinders: TemplateCylinder;
+}
+
 export type ValueRange = number | [number, number];
 
 export interface CylinderSpinParams {
@@ -32,6 +60,7 @@ export interface TestSceneProps extends BasicSceneProps {
   fontSize: string;
   fillStyle?: string;
   onSpinFinish?: (spinNumber: number) => void;
+  sceneTemplate?: Partial<SceneTemplate>;
 }
 
 const loader = new TextureLoader();
@@ -40,6 +69,7 @@ export class TestScene extends BasicScene {
   textPainter: TextPainter;
   cylinders: CylinderSlot[];
   spinConfig: [CylinderSpinParams, CylinderSpinParams, CylinderSpinParams];
+  sceneTemplate: SceneTemplate;
   spinState: SpinState;
   currentSpinNumber: number;
   onSpinFinish?: TestSceneProps['onSpinFinish'];
@@ -56,6 +86,7 @@ export class TestScene extends BasicScene {
   constructor(props: TestSceneProps) {
     super(props);
 
+    this.sceneTemplate = this.getSceneTemplate(props.sceneTemplate);
     this.spinConfig = [
       {
         cycles: [2, 4],
@@ -85,38 +116,41 @@ export class TestScene extends BasicScene {
     this.scene.add(this.ambientLight);
 
     const spotlight = new SpotLight(0xFFFFFF, 100, 30, 0.4);
-    spotlight.position.x = 9;
-    spotlight.position.z = 18;
-    spotlight.position.y = 0;
+    this.setMeshValueFromTemplateValue(
+      spotlight.position,
+      this.sceneTemplate.spotlight.position
+    );
     spotlight.castShadow = true;
     this.scene.add(spotlight);
 
-    const cylinderScaleX = 1.20;
-    const cylinderScaleY = 1.11;
-    const cylinderXShift = 2.48;
-    const cylindersX = [-cylinderXShift, 0, cylinderXShift];
-    const cylinderPositionY = -2.57;
-    const cylinderPositionZ = -0.57;
     const cylinder1 = this.createCylinder(props.numbersRollTextureURL);
     const cylinder2 = this.createCylinder(props.numbersRollTextureURL);
     const cylinder3 = this.createCylinder(props.numbersRollTextureURL);
     this.cylinders = [cylinder1, cylinder2, cylinder3];
     this.cylinders.forEach((cylinder, cylinderIndex) => {
-      cylinder.mesh.position.set(
-        cylindersX[cylinderIndex],
-        cylinderPositionY,
-        cylinderPositionZ,
+      const cylinderTemplate = this.sceneTemplate.cylinders[cylinderIndex];
+      this.setMeshValueFromTemplateValue(
+        cylinder.mesh.position,
+        cylinderTemplate.position
       );
-      cylinder.mesh.scale.set(cylinderScaleY, cylinderScaleX, cylinderScaleY);
+      this.setMeshValueFromTemplateValue(
+        cylinder.mesh.scale,
+        cylinderTemplate.scale
+      );
       this.scene.add(cylinder.mesh);
     });
 
-    const aspectRatio = 1.0829875518672198;
-    const geometryHeight = 8;
-    const geometryWidth = geometryHeight * aspectRatio;
-    const slotGeometry = new BoxGeometry(geometryWidth, geometryHeight, 0.1)
+    const slotGeometry = new BoxGeometry(1, 1, 0.1)
     this.slotMesh = new Mesh(slotGeometry, []);
     this.slotMesh.receiveShadow = true;
+    this.setMeshValueFromTemplateValue(
+      this.slotMesh.position,
+      this.sceneTemplate.slot.position
+    );
+    this.setMeshValueFromTemplateValue(
+      this.slotMesh.scale,
+      this.sceneTemplate.slot.scale
+    );
     this.scene.add(this.slotMesh);
     loader.load(
       props.slotTextureURL,
@@ -139,8 +173,12 @@ export class TestScene extends BasicScene {
       size: props.fontSize,
       fillStyle: props.fillStyle,
     });
-    const captionGeometry = new BoxGeometry(6.4, 0.9, 0.1);
+    const captionGeometry = new BoxGeometry(1, 1, 1);
     this.captionMesh = new Mesh(captionGeometry, []);
+    this.setMeshValueFromTemplateValue(
+      this.captionMesh.scale,
+      this.sceneTemplate.caption.scale
+    );
     this.scene.add(this.captionMesh);
     if (props.caption) {
       this.setCaption(props.caption);
@@ -205,11 +243,54 @@ export class TestScene extends BasicScene {
     this.resetRotations();
   }
 
+  getSceneTemplate(template: TestSceneProps['sceneTemplate']) {
+    const defaultSlot = {
+      position: { x: 0, y: 0, z: 0 },
+      scale: { x: 8.663900414937759, y: 8, z: 1 },
+    };
+    const defaultCaption = {
+      position: { x: 0, y: -0.7, z: 0.1 },
+      scale: { x: 6.4, y: 0.9, z: 0.1 },
+    };
+    const defaultCamera = {
+      position: { x: 0, y: -0.9, z: 10.8 },
+    };
+    const defaultSpotlight = {
+      position: { x: 9, y: 0, z: 18 },
+    };
+    const defaultCylinders: TemplateCylinder = [
+      {
+        position: { x: -2.48, y: -2.57, z: -0.57 },
+        scale: { x: 1.11, y: 1.2, z: 1.11 },
+      },
+      {
+        position: { x: 0, y: -2.57, z: -0.57 },
+        scale: { x: 1.11, y: 1.2, z: 1.11 },
+      },
+      {
+        position: { x: 2.48, y: -2.57, z: -0.57 },
+        scale: { x: 1.11, y: 1.2, z: 1.11 },
+      },
+    ];
+    return {
+      slot: template?.slot || defaultSlot,
+      caption: template?.caption || defaultCaption,
+      camera: template?.camera || defaultCamera,
+      spotlight: template?.spotlight || defaultSpotlight,
+      cylinders: template?.cylinders || defaultCylinders,
+    };
+  }
+
   resetPositions() {
-    this.camera.position.y = -0.9;
-    this.camera.position.z = 10.8;
+    this.setMeshValueFromTemplateValue(
+      this.camera.position,
+      this.sceneTemplate.camera.position
+    );
     if (this.captionMesh) {
-      this.captionMesh.position.set(0, -0.7, 0.1);
+      this.setMeshValueFromTemplateValue(
+        this.captionMesh.position,
+        this.sceneTemplate.caption.position
+      );
     }
   }
 
@@ -218,6 +299,17 @@ export class TestScene extends BasicScene {
     if (this.captionMesh) {
       this.captionMesh.rotation.set(0, 0, 0);
     }
+  }
+
+  setMeshValueFromTemplateValue(
+    meshValue: Mesh['scale'] | Mesh['position'],
+    templateValue: TemplateValue
+  ) {
+    meshValue.set(
+      templateValue.x,
+      templateValue.y,
+      templateValue.z
+    );
   }
 
   getValueFromRange(valueRange: ValueRange) {

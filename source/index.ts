@@ -7,7 +7,7 @@ import { ShaderPass } from './Postprocessing/ShaderPass';
 import { RenderPass } from './Postprocessing/RenderPass';
 import { EffectComposer } from './Postprocessing/EffectComposer';
 import { ColorCorrectionShader } from './Postprocessing/Shaders/ColorCorrectionShader';
-import { TestScene, CylinderSpinParams } from './scenes/testScene';
+import { TestScene, CylinderSpinParams, SceneTemplate } from './scenes/testScene';
 
 const defaultProps = {
   font: 'serif',
@@ -26,6 +26,7 @@ export interface SlotMachine3DProps {
   fillStyle?: string,
   onSpinStart?: (spinNumber: number) => void,
   onSpinFinish?: (spinNumber: number) => void,
+  sceneTemplate?: Partial<SceneTemplate>;
 }
 
 export default class SlotMachine3D {
