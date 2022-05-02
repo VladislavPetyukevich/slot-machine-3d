@@ -25,7 +25,7 @@ export interface SlotMachine3DProps {
   fontSize?: string,
   fillStyle?: string,
   onSpinStart?: (spinNumber: number) => void,
-  onSpinFinish?: (spinNumber: number) => void,
+  onSpinFinish?: (spinNumber: number) => void | Promise<void>,
   sceneTemplate?: Partial<SceneTemplate>;
 }
 
@@ -141,9 +141,12 @@ export default class SlotMachine3D {
     this.currScene.setCaption(caption);
   }
 
-  onSpinFinish = (spinNumber: number) => {
+  onSpinFinish = async (spinNumber: number) => {
     if (this.props.onSpinFinish) {
-      this.props.onSpinFinish(spinNumber);
+      const callbackResult = this.props.onSpinFinish(spinNumber);
+      if (callbackResult && callbackResult.then) {
+        await callbackResult;
+      }
     }
     if (this.spinQueue.length !== 0) {
       this.spinFromQueue();

@@ -60,6 +60,13 @@
       console.log('onSpinFinish:', spinNumber);
     }
 
+    function onSpinFinishWithDelay(spinNumber) {
+      console.log('onSpinFinishWithDelay:', spinNumber);
+      return new Promise(function (resolve) {
+        setTimeout(resolve, 10000);
+      });
+    }
+
     var slotMachine = new SlotMachine3D.default({
       renderContainer: renderContainer,
       numbersRollTextureURL: '/number-roll.png',
