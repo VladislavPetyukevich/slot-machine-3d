@@ -32,6 +32,7 @@ export interface SlotMachine3DProps {
 export default class SlotMachine3D {
   props: SlotMachine3DProps;
   spinQueue: number[];
+  isWaitingForSpinFinish: boolean;
   currScene: TestScene;
   prevTime: number;
   enabled: boolean;
@@ -43,6 +44,7 @@ export default class SlotMachine3D {
   constructor(props: SlotMachine3D['props']) {
     this.props = props;
     this.spinQueue = [];
+    this.isWaitingForSpinFinish = false;
     this.currScene = new TestScene({
       ...props,
       font: props.font || defaultProps.font,
@@ -89,7 +91,7 @@ export default class SlotMachine3D {
   }
 
   spin(number: number) {
-    if (this.currScene.checkIsSpinning()) {
+    if (this.currScene.checkIsSpinning() || this.isWaitingForSpinFinish) {
       this.spinQueue.push(number);
       return;
     }
@@ -143,10 +145,12 @@ export default class SlotMachine3D {
 
   onSpinFinish = async (spinNumber: number) => {
     if (this.props.onSpinFinish) {
+      this.isWaitingForSpinFinish = true;
       const callbackResult = this.props.onSpinFinish(spinNumber);
       if (callbackResult && callbackResult.then) {
         await callbackResult;
       }
+      this.isWaitingForSpinFinish = false;
     }
     if (this.spinQueue.length !== 0) {
       this.spinFromQueue();
